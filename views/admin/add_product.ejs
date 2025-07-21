@@ -1,0 +1,116 @@
+<%- include("navbar.ejs")%>
+
+<div id="content">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Add New Product</h5>
+                </div>
+                <div class="card-body">
+                    <form action="/admin/save_product" method="post" enctype="multipart/form-data">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label for="product_name" class="form-label">Product Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="product_name" name="product_name">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="market_price" class="form-label">Market Price <span class="text-danger">*</span></label>
+                                <input type="number" step="0.01" class="form-control" id="market_price" name="product_market_price">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="selling_price" class="form-label">Selling Price <span class="text-danger">*</span></label>
+                                <input type="number" step="0.01" class="form-control" id="selling_price" name="product_price">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="product_image" class="form-label">Main Image <span class="text-danger">*</span></label>
+                                <input type="file" class="form-control" id="product_image" name="product_main_image">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="is_trending" class="form-label">Is Trending?</label>
+                                <select class="form-select" id="is_trending" name="product_is_trending">
+                                    <option value="1">Yes</option>
+                                    <option value="0" selected>No</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="product_brand" class="form-label">Product Brand <span class="text-danger">*</span></label>
+                                <select class="form-select" id="product_brand" name="product_brand_id">
+                                    <option value="">Select Brand</option>
+                                    <% for(var i=0;i<brands.length;i++){ %>
+                                        <option value="<%= brands[i].product_brand_id %>"><%= brands[i].product_brand_name %></option>
+                                    <% } %>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="product_style" class="form-label">Product Style <span class="text-danger">*</span></label>
+                                <select class="form-select" id="product_style" name="product_style_id">
+                                    <option value="">Select Style</option>
+                                    <% for(var i=0;i<styles.length;i++){ %>
+                                        <option value="<%= styles[i].product_style_id %>"><%= styles[i].product_style_name %></option>
+                                    <% } %>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="product_type" class="form-label">Product Type <span class="text-danger">*</span></label>
+                                <select class="form-select" id="product_type" name="product_type_id">
+                                    <option value="">Select Type</option>
+                                    <% for(var i=0;i<types.length;i++){ %>
+                                        <option value="<%= types[i].product_type_id %>"><%= types[i].product_type_name %></option>
+                                    <% } %>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="product_for" class="form-label">Product For <span class="text-danger">*</span></label>
+                                <select class="form-select" id="product_for" name="product_for" onchange="ShowHideKidType()">
+                                    <option value="">Select For</option>
+                                    <option>Male</option>
+                                    <option>Female</option>
+                                    <option>Kids</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="kid_type" class="form-label">Kid Type</label>
+                                <select class="form-select" id="kid_type" name="product_kid_type" disabled>
+                                    <option>Both</option>
+                                    <option>Boys</option>
+                                    <option>Girls</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="stock" class="form-label">Available Stock <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="stock" name="product_stock">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="product_color" class="form-label">Product Color <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="product_color" name="product_color">
+                            </div>
+                            <div class="col-md-12">
+                                <label for="product_description" class="form-label">Product Description <span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="editor" name="product_description" rows="4"></textarea>
+                            </div>
+                            <div class="col-12 text-end">
+                                <button type="submit" class="btn btn-primary">Save Product</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function ShowHideKidType(){
+        var product_for = document.getElementById("product_for").value;
+        var kidType = document.getElementById("kid_type");
+        if(product_for === "Kids"){
+            kidType.disabled = false;
+        } else {
+            kidType.disabled = true;
+            kidType.value = "";
+        }
+    }
+</script>
+
+<%- include("footer.ejs")%>

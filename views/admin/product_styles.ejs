@@ -1,0 +1,148 @@
+<%- include('navbar.ejs') %>
+<div id="content">
+    <div class="container-fluid">
+        <div class="row justify-content-center mt-4">
+            <div class="col-lg-6 col-md-8">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Add Product Style</h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="/admin/save_product_style" method="post" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="style_name" class="form-label">Style Name</label>
+                                <input type="text" class="form-control" id="style_name" name="product_style_name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="style_image" class="form-label">Style Image</label>
+                                <input type="file" class="form-control" id="style_image" name="product_style_image" required>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Add Style</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0">Product Styles List</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width: 5%;">#</th>
+                                        <th>Product Style</th>
+                                        <th style="width: 15%;">Status</th>
+                                        <th style="width: 20%;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if (result && result.length > 0) { %>
+                                        <% for (var i = 0; i < result.length; i++) { %>
+                                        <tr>
+                                            <td><%= i + 1 %></td>
+                                            <td><%= result[i].product_style_name %></td>
+                                            <td><img src="/product_styles/<%-result[i].product_style_image%>" style="width: 50px; height: 50px;"></td>
+                                            <td>
+                                                <span class="badge <%= result[i].status === 'active' ? 'bg-success' : 'bg-danger' %>">
+                                                    <%= result[i].status %>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <button 
+                                                     class="btn btn-sm btn-outline-primary editBtn"
+                                                     data-id="<%= result[i].product_style_id %>"
+                                                     data-name="<%= result[i].product_style_name %>"
+                                                     data-status="<%= result[i].status %>"
+                                                     data-image="<%= result[i].product_style_image %>"
+                                                     data-bs-toggle="modal" 
+                                                     data-bs-target="#myModal">
+                                                     Edit
+                                                     </button>
+                                                     <a href="delete_product_style/<%- result[i].product_style_id %>">
+                                                     <button class="btn btn-sm btn-outline-danger">Delete</button>
+                                                     </a>
+                                                 </div>
+                                            </td>
+                                        </tr>
+                                        <% } %>
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="4" class="text-center text-muted">No styles found.</td>
+                                        </tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+            
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="modalLabel">Update Product Type</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+            
+                    <!-- Modal Body -->
+                    <form class="m-2" action="/admin/update_product_style" method="post" enctype="multipart/form-data">
+                <!-- Hidden ID -->
+                        <input type="hidden" name="product_style_id" id="edit_type_id">
+            
+                        <label>Product Type Name</label>
+                        <input type="text" class="form-control mb-2" name="product_style_name" id="edit_type_name">
+            
+                        <label>Product Type Image</label>
+                        <input type="file" class="form-control mb-2" name="product_style_image">
+                        <input type="hidden" name="product_style_image" id="edit_image">
+            
+                        <label>Status</label>
+                        <select class="form-select" name="status" id="edit_status">
+                            <option value="active">Active</option>
+                            <option value="deleted">Deleted</option>
+                        </select>
+                    </form>
+            
+                    <!-- Modal Footer -->
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary" id="saveChangesBtn">Save changes</button>
+                    </div>
+            
+                </div>
+            </div>
+        </div>
+    </div>
+    <%- include('footer.ejs') %>
+
+    <script>
+        document.querySelectorAll(".editBtn").forEach(button => {
+          button.addEventListener("click", function () {
+            const id = this.getAttribute("data-id");
+            const name = this.getAttribute("data-name");
+            const status = this.getAttribute("data-status");
+            const image = this.getAttribute("data-image");
+            document.getElementById("edit_type_id").value = id;
+            document.getElementById("edit_type_name").value = name;
+            document.getElementById("edit_status").value = status;
+            document.getElementById("edit_image").value = image;
+          });
+        });
+      
+        // Optional: close modal on save (replace alert logic)
+        document.getElementById("saveChangesBtn").addEventListener("click", function () {
+          document.querySelector("#myModal form").submit(); // submit form
+        });
+      </script>

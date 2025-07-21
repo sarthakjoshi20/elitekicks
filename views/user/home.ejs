@@ -1,0 +1,213 @@
+<%- include("navbar.ejs") %>
+   
+   <!-- Hero Carousel -->
+    <div id="mainCarousel" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-indicators">
+        <% for(var i=0;i<sliders.length;i++){ %>
+        <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="<%- i %>" class="<%- (i==0) ? 'active' : '' %>"></button>
+        <% } %>
+      </div>
+      <div class="carousel-inner">
+        <% for(var i=0;i<sliders.length;i++){ %>
+        <div class="carousel-item <%- (i==0) ? 'active' : '' %>">
+          <img src="/sliders/<%- sliders[i].slider_image %>" class="d-block w-100" alt="New Collection">
+          <div class="carousel-caption">
+            <h2 class="fw-bold display-4 mb-3"><%- sliders[i].slider_title %></h2>
+            <p class="lead"><%- sliders[i].slider_description %></p>
+            <a href="<%- sliders[i].slider_button_link %>" target="_blank" class="btn btn-light btn-lg rounded-0 mt-3"><%- sliders[i].slider_button_text %></a>
+          </div>
+        </div>
+        <% } %>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      </button>
+    </div>
+
+    <!-- Trending Products -->
+    <section class="container my-5 py-5">
+      <div class="text-center mb-5">
+        <h2 class="section-title slide-up">TRENDING SHOES</h2>
+        <p class="text-muted slide-up delay-1">Our most popular picks this season</p>
+      </div>
+      
+      <div class="row row-cols-1 row-cols-md-3 g-4">
+        <% for(var i=0;i<trending_products.length;i++){ %>
+        <div class="col fade-in delay-<%-i%>">
+          <div class="product-card">
+            <div class="position-relative overflow-hidden">
+              <img src="/products/<%- trending_products[i].product_main_image %>" class="img-fluid w-100 product-img" alt="Classic Oxford">
+            </div>
+            <div class="p-4">
+              <h5><%- trending_products[i].product_name %></h5>
+              <p class="text-muted mb-2"><%- trending_products[i].product_description.substring(0,100) %>...</p>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="price">&#8377;<%- trending_products[i].product_price %></span>
+                <a href="/product_details/<%- trending_products[i].product_id %>" class="btn btn-sm btn-dark rounded-0">VIEW</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <% } %>
+      </div>
+    </section>
+
+    <!-- Promo Banner -->
+    <section class="promo-banner my-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8 slide-up">
+            <h2 class="display-4 fw-bold mb-4">SUMMER SALE EVENT</h2>
+            <p class="lead mb-4">Enjoy up to 50% off on selected styles. Limited time only.</p>
+            <a href="#" class="btn btn-danger btn-lg rounded-0 px-5 pulse">SHOP THE SALE</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Shop by Sport Type -->
+    <section class="container my-5 py-5">
+      <div class="text-center mb-5">
+        <h2 class="section-title slide-up">SHOP BY SPORT</h2>
+        <p class="text-muted slide-up delay-1">Performance footwear for every activity</p>
+      </div>
+      
+      <div class="row g-4">
+        <% for(var i=0;i<product_types.length;i++){ %>
+        <div class="col-md-4 fade-in delay-<%-i%>">
+          <div class="category-card">
+            <img src="/product_types/<%- product_types[i].product_type_image %>" class="img-fluid w-100 h-100" alt="Running">
+            <div class="category-overlay">
+              <h3><%- product_types[i].product_type_name %></h3>
+              <a href="#" class="text-white">SHOP NOW <i class="bi bi-arrow-right ms-2"></i></a>
+            </div>
+          </div>
+        </div>
+        <% } %>
+      </div>
+    </section>
+
+    <!-- Shop by Style -->
+    <section class="container my-5 py-5">
+      <div class="text-center mb-5">
+        <h2 class="section-title slide-up">SHOP BY STYLE</h2>
+        <p class="text-muted slide-up delay-1">Find your perfect look</p>
+      </div>
+      
+      <div class="row g-4">
+        <% for(var i=0;i<product_styles.length;i++){ %>
+        <div class="col-md-4 fade-in delay-<%-i%>">
+          <div class="category-card">
+            <img src="/product_styles/<%- product_styles[i].product_style_image %>" class="img-fluid w-100 h-100" alt="Casual">
+            <div class="category-overlay">
+              <h3><%- product_styles[i].product_style_name %></h3>
+              <a href="#" class="text-white">SHOP NOW <i class="bi bi-arrow-right ms-2"></i></a>
+            </div>
+          </div>
+        </div>
+        <% } %>
+      </div>
+    </section>
+
+    <!-- Discount Products -->
+    <section class="container my-5 py-5">
+      <div class="text-center mb-5">
+        <h2 class="section-title slide-up text-danger">HIGH DISCOUNT PRODUCTS</h2>
+        <p class="text-muted slide-up delay-1">Limited-time offers</p>
+      </div>
+      
+      <div class="row row-cols-1 row-cols-md-3 g-4">
+        <% for(var i=0;i<high_discount_products.length;i++){ %>
+        <div class="col fade-in">
+          <div class="product-card">
+            <div class="position-relative overflow-hidden">
+              <img src="/products/<%- high_discount_products[i].product_main_image %>" class="img-fluid w-100 product-img">
+              <span class="discount-badge badge bg-danger"><%- high_discount_products[i].apply_discount_percent %> % OFF</span>
+            </div>
+            <div class="p-4">
+              <h5><%- high_discount_products[i].product_name %></h5>
+              <p class="mb-1"><span class="text-muted text-decoration-line-through">&#8377;<%- high_discount_products[i].product_market_price %></span> <span class="fw-bold text-success">&#8377;<%- high_discount_products[i].product_price %></span></p>
+              <a href="#" class="btn btn-sm btn-dark rounded-0 w-100">VIEW DEAL</a>
+            </div>
+          </div>
+        </div>
+        <% } %>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="bg-light py-5 my-5">
+      <div class="container py-5">
+        <div class="text-center mb-5">
+          <h2 class="section-title slide-up">WHAT OUR CUSTOMERS SAY</h2>
+          <p class="text-muted slide-up delay-1">Trusted by thousands worldwide</p>
+        </div>
+        
+        <div class="row g-4">
+          <div class="col-md-4 fade-in">
+            <div class="testimonial-card p-4">
+              <div class="d-flex mb-3">
+                <div class="me-3">
+                  <i class="bi bi-quote"></i>
+                </div>
+                <div>
+                  <p>"The comfort and quality of my EliteKicks shoes are unmatched. After years of wear, they still look and feel exceptional."</p>
+                  <div class="d-flex align-items-center">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" class="rounded-circle me-3" width="50" height="50" alt="James Wilson">
+                    <div>
+                      <h6 class="mb-0">James Wilson</h6>
+                      <small class="text-muted">Financial Director</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-md-4 fade-in delay-1">
+            <div class="testimonial-card p-4">
+              <div class="d-flex mb-3">
+                <div class="me-3">
+                  <i class="bi bi-quote"></i>
+                </div>
+                <div>
+                  <p>"As a marathon runner, I've tried countless brands. The Performance Runner series provides the perfect balance of support and responsiveness."</p>
+                  <div class="d-flex align-items-center">
+                    <img src="https://randomuser.me/api/portraits/women/44.jpg" class="rounded-circle me-3" width="50" height="50" alt="Sarah Chen">
+                    <div>
+                      <h6 class="mb-0">Sarah Chen</h6>
+                      <small class="text-muted">Professional Athlete</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-md-4 fade-in delay-2">
+            <div class="testimonial-card p-4">
+              <div class="d-flex mb-3">
+                <div class="me-3">
+                  <i class="bi bi-quote"></i>
+                </div>
+                <div>
+                  <p>"The attention to detail in every pair is remarkable. I've been collecting their limited editions for years - each one is a wearable work of art."</p>
+                  <div class="d-flex align-items-center">
+                    <img src="https://randomuser.me/api/portraits/men/75.jpg" class="rounded-circle me-3" width="50" height="50" alt="Michael Rodriguez">
+                    <div>
+                      <h6 class="mb-0">Michael Rodriguez</h6>
+                      <small class="text-muted">Art Collector</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+<%- include("footer.ejs") %>
