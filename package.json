@@ -9,6 +9,9 @@
   "scripts": {
     "test": "echo \"Running tests...\""
   },
+  "publishConfig": {
+  "registry": "https://npm.pkg.github.com"
+ },
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
