@@ -1,0 +1,241 @@
+<%- include("navbar.ejs") %>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+          
+        }
+        
+        .profile-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+        }
+        
+        .profile-sidebar {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        
+        .profile-pic {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+            border: 5px solid #f0f0f0;
+        }
+        
+        .profile-name {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .profile-email {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .profile-menu {
+            list-style: none;
+            padding: 0;
+            margin-top: 30px;
+            text-align: left;
+        }
+        
+        .profile-menu li {
+            margin-bottom: 15px;
+        }
+        
+        .profile-menu a {
+            display: block;
+            padding: 10px 15px;
+            color: #555;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        .profile-menu a:hover, .profile-menu a.active {
+            background: #f0f7ff;
+            color: #0066cc;
+        }
+        
+        .profile-menu i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .profile-content {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .profile-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .info-group {
+            margin-bottom: 20px;
+        }
+        
+        .info-label {
+            font-size: 14px;
+            color: #777;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .edit-btn {
+            background: #0066cc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        
+        .edit-btn:hover {
+            background: #0052a3;
+        }
+        
+        .order-history {
+            margin-top: 30px;
+        }
+        
+        .order-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .order-table th {
+            text-align: left;
+            padding: 12px 15px;
+            background: #f9f9f9;
+            font-weight: 500;
+        }
+        
+        .order-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .order-status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-completed {
+            background: #e6f7ee;
+            color: #00a651;
+        }
+        
+        .status-pending {
+            background: #fff8e6;
+            color: #ff9900;
+        }
+        
+        .status-cancelled {
+            background: #ffebee;
+            color: #ff4444;
+        }
+        
+        .view-order {
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .profile-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-info {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <div class="profile-container py-5">
+        <!-- Profile Sidebar -->
+        <div class="profile-sidebar">
+            <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Profile Picture" class="profile-pic">
+            <h2 class="profile-name">Sarah Johnson</h2>
+            <p class="profile-email">sarah.johnson@example.com</p>
+            
+            <ul class="profile-menu">
+                <li><a href="#" class="active"><i class="fas fa-user"></i> My Profile</a></li>
+                <li><a href="/my_orders"><i class="fas fa-shopping-bag"></i> My Orders</a></li>
+                <li><a href="#"><i class="fas fa-heart"></i> Wishlist</a></li>
+                <li><a href="#"><i class="fas fa-map-marker-alt"></i> Addresses</a></li>
+                <li><a href="#"><i class="fas fa-lock"></i> Change Password</a></li>
+                <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </div>
+        
+        <!-- Profile Content -->
+        <div class="profile-content">
+            <h2 class="section-title">Personal Information</h2>
+            
+            <div class="profile-info">
+                <div class="info-group">
+                    <div class="info-label">Full Name</div>
+                    <div class="info-value">Vikas Janardhan Thore</div>
+                </div>
+                
+                <div class="info-group">
+                    <div class="info-label">Email</div>
+                    <div class="info-value">sarah.johnson@example.com</div>
+                </div>
+                
+                <div class="info-group">
+                    <div class="info-label">Phone Number</div>
+                    <div class="info-value">(555) 123-4567</div>
+                </div>
+                
+                <div class="info-group">
+                    <div class="info-label">Date of Birth</div>
+                    <div class="info-value">June 15, 1990</div>
+                </div>
+                
+                <div class="info-group">
+                    <div class="info-label">Gender</div>
+                    <div class="info-value">Female</div>
+                </div>
+            </div>
+            
+            <button class="edit-btn">Edit Profile</button>
+        </div>
+    </div>
+
+<%- include("footer.ejs") %>

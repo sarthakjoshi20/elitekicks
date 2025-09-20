@@ -1,0 +1,124 @@
+<%- include("navbar.ejs")%>
+<style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #6c757d;
+            --success: #28a745;
+            --info: #17a2b8;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --text: #2d3748;
+            --text-light: #718096;
+            --border: #e2e8f0;
+            --background: #f7fafc;
+        }
+        /* Recent Orders Table */
+        .table-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+            margin-bottom: 2rem;
+        }
+        
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .table-header h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        th {
+            font-weight: 700;
+            color: var(--text-light);
+            font-size: 0.875rem;
+        }
+        
+        tbody tr:hover {
+            background: var(--light);
+        }
+        
+        .status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .status.completed {
+            background: rgba(72, 187, 120, 0.1);
+            color: #48bb78;
+        }
+        
+        .status.pending {
+            background: rgba(246, 173, 85, 0.1);
+            color: #f6ad55;
+        }
+        
+        .status.cancelled {
+            background: rgba(245, 101, 101, 0.1);
+            color: #f56565;
+        }
+</style>
+<div id="content">
+        <div class="table-card">
+                <div class="table-header">
+                    <h3 class="badge bg-primary">All Pending Orders</h3>
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Payment Status</th>
+                            <th>Transaction Id</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <% for(var i=0;i<orders.length;i++){ %>
+                        <tr>
+                            <td><%- i+1 %></td>
+                            <td>ELITEKICKS<%- orders[i].order_id %></td>
+                            <td><%- orders[i].fullname %></td>
+                            <td><%- orders[i].order_date.toISOString().slice(0,10) %></td>
+                            <td>₹ <%- orders[i].total_amount %></td>
+                            <td style="text-transform: capitalize;"><%- orders[i].payment_status %></td>
+                            <td><%- orders[i].transaction_id %></td>
+                            <td><a href="/admin/view_details/<%- orders[i].order_id %>" style="text-decoration: none; cursor: pointer;">
+                                <span class="status pending pt-2 pb-2 ps-3 pe-3">Pending</span></a>
+                            </td>
+                        </tr>
+                    <% } if(orders.length == 0){ %>
+                        <tr>
+                            <td colspan="8" class="text-center"> <h5 class="text-warning" style="font-weight: 900; color: var(--text-light); font-size: 1rem;">No Pending Orders Yet</h5> </td >
+                        </tr>
+                    <% } %>
+                    </tbody>
+                </table>
+            </div>
+</div>
+<%- include("footer.ejs")%>

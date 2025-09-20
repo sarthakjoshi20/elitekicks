@@ -1,1 +1,330 @@
-<h1>Admin Login</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | Secure Access</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --text: #2d3748;
+            --text-light: #718096;
+            --border: #e2e8f0;
+            --error: #e53e3e;
+            --background: #f7fafc;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+        
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .login-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+        
+        .card-header {
+            padding: 2rem 2rem 1rem;
+            text-align: center;
+        }
+        
+        .card-header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--text);
+        }
+        
+        .card-header p {
+            color: var(--text-light);
+            font-size: 0.875rem;
+        }
+        
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.25rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border);
+        }
+        
+        .logo i {
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+        
+        .card-body {
+            padding: 0 2rem 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text);
+            font-size: 0.875rem;
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        .input-with-icon i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+        
+        .input-with-icon input {
+            padding-left: 2.75rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s;
+            background-color: var(--background);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+        }
+        
+        .btn-login {
+            display: block;
+            width: 100%;
+            padding: 0.875rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 1rem;
+        }
+        
+        .btn-login:hover {
+            background: var(--primary-dark);
+        }
+        
+        .additional-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.25rem;
+            font-size: 0.875rem;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .forgot-password {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: var(--text-light);
+            font-size: 0.8125rem;
+        }
+        
+        .secure-note {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            color: var(--text-light);
+            font-size: 0.8125rem;
+        }
+        
+        @media (max-width: 480px) {
+            .card-header, .card-body {
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+            
+            .additional-options {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+        }
+        
+        /* Error message styling */
+        .error-message {
+            color: var(--error);
+            font-size: 0.8125rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+        
+        input.error {
+            border-color: var(--error);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="card-header">
+                <div class="logo">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h1>Admin Portal</h1>
+                <p>Secure access to management dashboard</p>
+            </div>
+            
+            <div class="card-body">
+                <form action="/admin_login/verify_login" method="post" id="loginForm">
+                    <div class="form-group">
+                        <label for="mobile">Mobile Number</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                            <input type="tel" class="form-control" id="mobile" name="mobile" placeholder="10-digit mobile number" pattern="[0-9]{10}" required>
+                        </div>
+                        <div class="error-message" id="mobile-error"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-key"></i>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Your password" required>
+                        </div>
+                        <div class="error-message" id="password-error"></div>
+                    </div>
+                    
+                    <div class="additional-options">
+                        <div class="remember-me">
+                            <input type="checkbox" id="remember" name="remember">
+                            <label for="remember">Remember me</label>
+                        </div>
+                        <a href="#" class="forgot-password">Forgot password?</a>
+                    </div>
+                    
+                    <button type="submit" class="btn-login" id="loginButton">
+                        Sign In
+                    </button>
+                </form>
+                
+                <div class="secure-note">
+                    <i class="fas fa-lock"></i>
+                    <span>Secure connection</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>&copy; 2023 Admin Portal. All rights reserved.</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const mobileInput = document.getElementById('mobile');
+            const passwordInput = document.getElementById('password');
+            const mobileError = document.getElementById('mobile-error');
+            const passwordError = document.getElementById('password-error');
+            
+            loginForm.addEventListener('submit', function(e) {
+                let isValid = true;
+                
+                // Validate mobile number
+                const mobilePattern = /^[0-9]{10}$/;
+                if (!mobilePattern.test(mobileInput.value)) {
+                    showError(mobileInput, mobileError, 'Please enter a valid 10-digit mobile number');
+                    isValid = false;
+                } else {
+                    clearError(mobileInput, mobileError);
+                }
+                
+                // Validate password
+                if (passwordInput.value.trim() === '') {
+                    showError(passwordInput, passwordError, 'Please enter your password');
+                    isValid = false;
+                } else {
+                    clearError(passwordInput, passwordError);
+                }
+                
+                if (!isValid) {
+                    e.preventDefault();
+                }
+            });
+            
+            function showError(input, errorElement, message) {
+                input.classList.add('error');
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+            }
+            
+            function clearError(input, errorElement) {
+                input.classList.remove('error');
+                errorElement.textContent = '';
+                errorElement.style.display = 'none';
+            }
+            
+            // Clear errors when user starts typing
+            mobileInput.addEventListener('input', function() {
+                clearError(mobileInput, mobileError);
+            });
+            
+            passwordInput.addEventListener('input', function() {
+                clearError(passwordInput, passwordError);
+            });
+        });
+    </script>
+</body>
+</html>

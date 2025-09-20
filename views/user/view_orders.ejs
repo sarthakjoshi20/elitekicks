@@ -1,0 +1,265 @@
+<%- include("navbar.ejs") %>
+
+<div class="container my-5" id="invoice">
+  <% if (orders && orders.length > 0) { %>
+    <% let order = orders[0]; %>
+
+    <!-- Invoice Header -->
+    <div class="invoice-header d-flex justify-content-between align-items-center mb-4 p-4 bg-light rounded">
+      <div>
+        <h2 class="text-primary mb-0">INVOICE</h2>
+        <p class="text-muted mb-0">Order ELITEKICKS<%= order.order_id %></p>
+      </div>
+      <div class="text-end">
+        <button onclick="window.print()" class="btn btn-primary">
+          <i class="fas fa-print me-2"></i>Print Invoice
+        </button>
+        <button id="downloadPdf" class="btn btn-outline-primary ms-2">
+          <i class="fas fa-download me-2"></i>Download PDF
+        </button>
+      </div>
+    </div>
+
+    <!-- Company and Order Info -->
+    <div class="row mb-4">
+      <div class="col-md-4">
+        <div class="card h-100">
+          <div class="card-header bg-light">
+            <h6 class="mb-1"><i class="fas fa-store me-2"></i>From:</h6>
+          </div>
+          <div class="card-body">
+            <h5 class="text-primary">Your Shop Name</h5>
+            <p class="mb-1">123 Main Street, City, State</p>
+            <p class="mb-1">Phone: +91 9876543210</p>
+            <p class="mb-1">Email: support@yourshop.com</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100">
+          <div class="card-header bg-light">
+            <h6 class="mb-1"><i class="fas fa-user me-2"></i>Bill To:</h6>
+          </div>
+          <div class="card-body">
+            <h5 class="text-primary"><%= order.fullname %></h5>
+            <p class="mb-1"><%= order.area %></p>
+            <p class="mb-1"><%= order.city %>, <%= order.state %>, <%= order.country %> - <%= order.pincode %></p>
+            <p class="mb-1">Phone: <%= order.mobile %></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header bg-light">
+            <h6 class="mb-1"><i class="fas fa-receipt me-2"></i>Order Details:</h6>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-6">
+                <p class="mb-1"><strong>Order Id:</strong></p>
+              </div>
+              <div class="col-6 text-end">
+                <p class="mb-1">ELITEKICKS<%= order.order_id %></p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <p class="mb-1"><strong>Order Date:</strong></p>
+              </div>
+              <div class="col-6 text-end">
+                <p class="mb-1"><%= order.order_date.toDateString() %></p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <p class="mb-1"><strong>Payment Method:</strong></p>
+              </div>
+              <div class="col-6 text-end">
+                <p class="mb-1"><%= order.payment_method %></p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <p class="mb-1"><strong>Payment Status:</strong></p>
+              </div>
+              <div class="col-6 text-end">
+                <p class="mb-1">
+                  <span class="badge <%= order.payment_status === 'paid' ? 'bg-success' : 'bg-warning' %>">
+                    <%= order.payment_status %>
+                  </span>
+                </p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <p class="mb-1"><strong>Transaction Id:</strong></p>
+              </div>
+              <div class="col-6 text-end">
+                <p class="mb-1">
+                  <span class="badge bg-info">
+                    <%= order.transaction_id %>
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Order Details -->
+    <div class="row mb-4">
+    </div>
+
+    <!-- Ordered Products Table -->
+    <div class="card mb-4">
+      <div class="card-header bg-light">
+        <h6 class="mb-0"><i class="fas fa-shopping-cart me-2"></i>Order Items</h6>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th class="ps-4">#</th>
+                <th>Product</th>
+                <th class="text-end">Price (₹)</th>
+                <th class="text-center">Qty</th>
+                <th class="text-end pe-4">Total (₹)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% let grandTotal = 0; %>
+              <% info.forEach((product, i) => { 
+                   let total = product.price * product.qty; 
+                   grandTotal += total; 
+              %>
+                <tr>
+                  <td class="ps-4"><%= i+1 %></td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="flex-grow-1 ms-3">
+                        <h6 class="mb-0"><%= product.product_name %></h6>
+                        <small class="text-muted">SIZE: <%= product.product_size %></small>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="text-end">₹<%= product.product_price %></td>
+                  <td class="text-center"><%= product.product_qty %></td>
+                  <td class="text-end pe-4">₹<%= product.product_total %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+            <tfoot class="table-light">
+              <tr>
+                <td colspan="4" class="text-end fw-bold ps-4">Grand Total</td>
+                <td class="text-end fw-bold pe-4">₹<%= order.total_amount %></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notes & Thank You -->
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header bg-light">
+            <h6 class="mb-0"><i class="fas fa-sticky-note me-2"></i>Notes</h6>
+          </div>
+          <div class="card-body">
+            <p class="text-muted mb-0">Thank you for your business. Please note that this is a computer-generated invoice and does not require a physical signature.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card bg-light">
+          <div class="card-body text-center py-5">
+            <i class="fas fa-check-circle text-success display-4 mb-3"></i>
+            <h4 class="text-primary">Thank You For Your Order!</h4>
+            <p class="text-muted">We appreciate your business</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <% } else { %>
+    <div class="alert alert-warning text-center py-4">
+      <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+      <h4>Invoice Not Found</h4>
+      <p class="mb-0">The requested invoice could not be located.</p>
+    </div>
+  <% } %>
+</div>
+
+<%- include("footer.ejs") %>
+
+<!-- Print Styling -->
+<style>
+  @media print {
+    navbar, footer, button {
+      display: none !important;
+    }
+    #invoice {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+    }
+    .card {
+      border: none !important;
+      box-shadow: none !important;
+    }
+    .card-header {
+      background-color: #f8f9fa !important;
+      border-bottom: 1px solid #dee2e6 !important;
+    }
+    .table-light {
+      background-color: #f8f9fa !important;
+    }
+  }
+
+  /* Enhanced styling for the invoice */
+  .invoice-header {
+    border-left: 4px solid #0d6efd;
+  }
+  
+  .card {
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    border: 1px solid #e3e6f0;
+  }
+  
+  .card-header {
+    border-bottom: 1px solid #e3e6f0;
+    font-weight: 600;
+  }
+  
+  .table th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+  }
+</style>
+
+<!-- Include Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<!-- Optional: PDF download functionality -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+  document.getElementById('downloadPdf')?.addEventListener('click', function() {
+    const element = document.getElementById('invoice');
+    const options = {
+      margin: 10,
+      filename: 'invoiceElitekicks.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    
+    html2pdf().set(options).from(element).save();
+  });
+</script>

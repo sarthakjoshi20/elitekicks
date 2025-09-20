@@ -5,6 +5,7 @@ var upload = require("express-fileupload");
 var admin_route = require('./routes/admin_route');
 var user_route = require('./routes/user_route');
 var admin_login = require('./routes/admin_login');
+var cookieParser = require('cookie-parser');
 
 var app = express();
 app.use(bodyParser.urlencoded({extended:true}));
@@ -15,6 +16,7 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }));
+app.use(cookieParser("sefdghjghfgfxd"));
 
 app.use('/admin_login',admin_login);
 app.use('/admin',admin_route);

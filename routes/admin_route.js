@@ -3,11 +3,39 @@ var router = express.Router();
 var exe = require('./../connection');
 var fs = require('file-system');
 
-router.get('/',function(req,res){
-    res.render("admin/home.ejs");
+function check_admin_login(req,res,next){
+    if(req.session.admin_id)
+        next()
+    else
+        res.redirect("/admin_login")
+}
+
+router.get('/logout', check_admin_login, (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            console.error("Error destroying session:", err);
+            return res.status(500).send("Logout failed");
+        }
+        res.clearCookie("connect.sid"); // clear cookie (optional but good practice)
+        res.redirect("/admin_login");
+    });
 });
 
-router.get('/product_brand',async function(req,res){
+
+router.get('/',check_admin_login,async function(req,res){
+
+    var sql=`SELECT * FROM orders`;
+    var orders=await exe(sql)
+
+    var sql1=`SELECT * FROM products`;
+    var products=await exe(sql1)
+
+    var sql=`SELECT * FROM customers`;
+    var customers=await exe(sql)
+    res.render("admin/home.ejs",{orders,products,customers});
+});
+
+router.get('/product_brand',check_admin_login,async function(req,res){
     try{
         var sql=`SELECT * FROM product_brands`
         var result=await exe(sql)
@@ -16,7 +44,7 @@ router.get('/product_brand',async function(req,res){
     res.render("admin/product_brand.ejs",{result:result});
 });
 
-router.post('/save_product_brand',async function(req,res){
+router.post('/save_product_brand',check_admin_login,async function(req,res){
     try{
         if(req.files){
             var file_name= new Date().getTime()+req.files.product_brand_image.name;
@@ -32,7 +60,7 @@ router.post('/save_product_brand',async function(req,res){
     res.redirect("product_brand")
 });
 
-router.post('/update_product_brand',async function(req,res){
+router.post('/update_product_brand',check_admin_login,async function(req,res){
     try{
         if(req.files){
             var file_name= new Date().getTime()+req.files.product_brand_image.name;
@@ -54,20 +82,20 @@ router.post('/update_product_brand',async function(req,res){
     res.redirect("/admin/product_brand")
 })
 
-router.get("/delete_product_brand/:tid", async function(req, res) {
+router.get("/delete_product_brand/:tid",check_admin_login,async function(req, res) {
     var tid = req.params.tid;
     var sql = `DELETE FROM product_brands WHERE product_brand_id = ?`;
     var info = await exe(sql, [tid]);
     res.redirect("/admin/product_brand");
 });
 
-router.get('/product_styles',async function(req,res){
+router.get('/product_styles',check_admin_login,async function(req,res){
         var sql=`SELECT * FROM product_styles`
         var result=await exe(sql)
         res.render("admin/product_styles.ejs",{result:result})
 });
 
-router.post('/save_product_style',async function(req,res){
+router.post('/save_product_style',check_admin_login,async function(req,res){
     try{
         if(req.files){
             var file_name= new Date().getTime()+req.files.product_style_image.name;
@@ -85,7 +113,7 @@ router.post('/save_product_style',async function(req,res){
     res.redirect("product_styles")
 });
 
-router.post('/update_product_style',async function(req,res){
+router.post('/update_product_style',check_admin_login,async function(req,res){
     try{
         if(req.files){
             var file_name= new Date().getTime()+req.files.product_style_image.name;
@@ -107,7 +135,7 @@ router.post('/update_product_style',async function(req,res){
     res.redirect("/admin/product_styles")
 });
 
-router.get("/delete_product_style/:tid", async function(req, res) {
+router.get("/delete_product_style/:tid",check_admin_login,async function(req, res) {
     var tid = req.params.tid;
     var sql = `DELETE FROM product_styles WHERE product_style_id = ?`;
     var info = await exe(sql, [tid]);
@@ -120,7 +148,7 @@ router.get('/product_types',async function(req,res){
         res.render("admin/product_types.ejs",{result})   
 });
 
-router.post('/save_product_types',async function(req,res){
+router.post('/save_product_types',check_admin_login,async function(req,res){
     try{
         if(req.files){
             var file_name= new Date().getTime()+req.files.product_type_image.name;
@@ -135,7 +163,7 @@ router.post('/save_product_types',async function(req,res){
     res.redirect("product_types");
 });
 
-router.get("/delete_product_type/:tid", async function(req, res) {
+router.get("/delete_product_type/:tid",check_admin_login,async function(req, res) {
         var tid = req.params.tid;
         var sql = `DELETE FROM product_types WHERE product_type_id = ?`;
         var info = await exe(sql, [tid]);
@@ -143,7 +171,7 @@ router.get("/delete_product_type/:tid", async function(req, res) {
 });
 
 
-router.post('/update_product_type',async function(req,res){
+router.post('/update_product_type',check_admin_login,async function(req,res){
     try{
         var d=req.body;
         if(req.files){
@@ -166,13 +194,13 @@ router.post('/update_product_type',async function(req,res){
 });
 
 
-router.get('/add_product',async function(req,res){
+router.get('/add_product',check_admin_login,async function(req,res){
     var brands=await exe("SELECT * FROM product_brands");
     var styles=await exe("SELECT * FROM product_styles");
     var types=await exe("SELECT * FROM product_types");
     res.render("admin/add_product.ejs",{brands,styles,types})
 })
-router.post('/save_product',async function(req, res) {
+router.post('/save_product',check_admin_login,async function(req, res) {
     try{
         var d=req.body;
         if(req.files){
@@ -214,7 +242,7 @@ router.post('/save_product',async function(req, res) {
     res.redirect("/admin/add_product");
 });
 
-router.get('/product_list',async function(req,res){
+router.get('/product_list',check_admin_login,async function(req,res){
     var sql=`SELECT * FROM products,product_brands,product_styles,product_types 
     WHERE 
     products.product_brand_id = product_brands.product_brand_id AND 
@@ -227,14 +255,14 @@ router.get('/product_list',async function(req,res){
     res.render("admin/product_list.ejs",{result,brands,styles,types})
 });
 
-router.get("/delete_product/:id",async function(req,res){
+router.get("/delete_product/:id",check_admin_login,async function(req,res){
     var id=req.params.id;
     var sql=`DELETE FROM products WHERE product_id = ${id}`;
     var result=await exe(sql);
     res.redirect("/admin/product_list");
 });
 
-router.post("/update_product",async function(req,res){
+router.post("/update_product",check_admin_login,async function(req,res){
     try{
         if(req.files){
             var file_name=new Date().getTime()+req.files.product_main_image.name;
@@ -270,14 +298,14 @@ router.post("/update_product",async function(req,res){
     res.redirect("/admin/product_list")
 });
 
-router.get("/slider_images",async function(req,res){
+router.get("/slider_images",check_admin_login,async function(req,res){
     var sql=`SELECT * FROM sliders`
     var result=await exe(sql)
     res.render("admin/slider_images.ejs",{result})
     //res.send(result)
 })
 
-router.post("/add_slider",async function(req,res){
+router.post("/add_slider",check_admin_login,async function(req,res){
     try{
         if(req.files){
             var file_name=new Date().getTime()+req.files.slider_image.name;
@@ -292,13 +320,84 @@ router.post("/add_slider",async function(req,res){
     res.redirect("/admin/slider_images")
 });
 
-router.get("/delete_slider/:id",async function(req,res){
+router.get("/delete_slider/:id",check_admin_login,async function(req,res){
     var id=req.params.id;
     var sql=`DELETE FROM sliders WHERE slider_id = ${id}`;
     var result=await exe(sql);
     res.redirect("/admin/slider_images")
 });
 
+router.get("/pending_orders",check_admin_login,async function(req,res){
+    var sql=`SELECT * FROM orders WHERE order_status = "placed"`;
+    var orders=await exe(sql)
 
+    res.render("admin/pending_order.ejs",{orders})
+});
 
+router.get("/view_details/:oid",check_admin_login,async function(req,res){
+    try{
+        var sql=`SELECT * FROM orders WHERE order_id=${req.params.oid}`;
+        var orders=await exe(sql);
+        var sql2=`SELECT * FROM order_products WHERE order_id =${req.params.oid}`
+        var info=await exe(sql2);
+        console.log(orders,info);
+        res.render("admin/view_deatils.ejs",{orders,info})
+    }catch(err){}
+});
+
+router.get("/change_order_to_dispatch/:oid",check_admin_login,async function(req,res){
+    var id=req.params.oid;
+    var today=new Date().toISOString();
+    var sql=`UPDATE orders SET order_status = "dispatched",dispatch_date="${today}" WHERE order_id= '${id}'`
+    var result=await exe(sql);
+    res.redirect("/admin/pending_orders")
+});
+
+router.get("/dispatch_orders",check_admin_login,async function(req,res){
+    var sql=`SELECT * FROM orders WHERE order_status = "dispatched"`;
+    var orders=await exe(sql)
+
+    res.render("admin/dispatch_order.ejs",{orders})
+});
+
+router.get("/change_order_to_delivered/:oid",check_admin_login,async function(req,res){
+    var id=req.params.oid;
+    var today=new Date().toISOString();
+    var sql=`UPDATE orders SET order_status = "delivered",deliver_date="${today}" WHERE order_id= '${id}'`
+    var result=await exe(sql);
+    res.redirect("/admin/dispatch_orders")
+});
+
+router.get("/delivered_orders",check_admin_login,async function(req,res){
+    var sql=`SELECT * FROM orders WHERE order_status = "delivered"`;
+    var orders=await exe(sql)
+
+    res.render("admin/delivered_orders.ejs",{orders})
+});
+
+router.get("/cancelled_orders",check_admin_login,async function(req,res){
+    var sql=`SELECT * FROM orders WHERE order_status = "cancelled"`;
+    var orders=await exe(sql)
+
+    res.render("admin/cancelled_orders.ejs",{orders})
+});
+
+router.get("/change_order_to_reject/:oid",check_admin_login,async function(req,res){
+    var id=req.params.oid;
+    var today=new Date().toISOString();
+    var sql=`UPDATE orders SET order_status = "cancelled",cancel_date="${today}" WHERE order_id= '${id}'`
+    var result=await exe(sql);
+    res.redirect("/admin/cancelled_orders")
+});
+
+router.get("/return_orders",check_admin_login,async function(req,res){
+    var sql=`SELECT * FROM orders WHERE order_status = "returned"`;
+    var orders=await exe(sql)
+
+    res.render("admin/returned_orders.ejs",{orders})
+});
+
+router.get("/promotional_banners",async function(req,res){
+     res.render("admin/promotional_banners.ejs")
+})
 module.exports = router;

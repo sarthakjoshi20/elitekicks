@@ -1,0 +1,440 @@
+<%- include("navbar.ejs") %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart | Store Name</title>
+    <style>
+        :root {
+            --primary: #000000;
+            --secondary: #ffffff;
+            --accent: #dc2626;
+            --text: #374151;
+            --light-text: #6b7280;
+            --border: #e5e7eb;
+            --background: #f9fafb;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.5;
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            background-color: var(--background);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--primary);
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .cart-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+        
+        .cart-items {
+            background: var(--secondary);
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+        
+        .cart-summary {
+            background: var(--secondary);
+            padding: 1.75rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            position: sticky;
+            top: 1rem;
+            align-self: flex-start;
+        }
+        
+        .cart-item {
+            display: grid;
+            grid-template-columns: 100px 1fr;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+        
+        .item-image {
+            width: 100%;
+            height: 100px;
+            object-fit: contain;
+            border-radius: 0.375rem;
+            background-color: #f3f4f6;
+            padding: 0.5rem;
+        }
+        
+        .item-details {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .item-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            font-size: 1.05rem;
+        }
+        
+        .item-price {
+            color: var(--accent);
+            font-weight: 600;
+            margin: 0.5rem 0;
+            font-size: 1.1rem;
+        }
+        
+        .item-actions {
+            display: flex;
+            align-items: center;
+            margin-top: auto;
+            gap: 1rem;
+        }
+        
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--border);
+            border-radius: 0.375rem;
+            overflow: hidden;
+        }
+        
+        .quantity-btn {
+            width: 2rem;
+            height: 2rem;
+            background: var(--secondary);
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text);
+        }
+        
+        .quantity-btn:hover {
+            background-color: #f3f4f6;
+        }
+        
+        .quantity-input {
+            width: 2.5rem;
+            text-align: center;
+            border: none;
+            border-left: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+            padding: 0.25rem;
+            -moz-appearance: textfield;
+            font-family: inherit;
+        }
+        
+        .quantity-input::-webkit-outer-spin-button,
+        .quantity-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        .remove-btn {
+            background: none;
+            border: none;
+            color: rgb(208, 77, 77);
+            cursor: pointer;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.375rem 0.5rem;
+            border-radius: 0.25rem;
+            border: 1px solid rgb(244, 157, 157);
+        }
+        
+        .remove-btn:hover {
+            color: var(--accent);
+            border: 1px solid var(--accent);
+        }
+        
+        .summary-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 0.9375rem;
+        }
+        
+        .summary-total {
+            font-weight: 700;
+            font-size: 1.125rem;
+            display: flex;
+            justify-content: space-between;
+            margin: 1.5rem 0;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+        
+        .checkout-btn {
+            width: 100%;
+            padding: 0.875rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            margin-top: 0.5rem;
+        }
+        
+        .checkout-btn:hover {
+            background: #b91c1c;
+        }
+        
+        .continue-shopping {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9375rem;
+            transition: color 0.15s ease;
+        }
+        
+        .continue-shopping:hover {
+            color: var(--accent);
+            text-decoration: underline;
+        }
+        
+        .empty-cart {
+            text-align: center;
+            padding: 3rem;
+            background: var(--secondary);
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            grid-column: 1 / -1;
+        }
+        
+        .empty-cart h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .empty-cart p {
+            color: var(--light-text);
+            margin-bottom: 1.5rem;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .shop-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.15s ease;
+        }
+        
+        .shop-btn:hover {
+            background: #000000;
+        }
+        
+        @media (max-width: 768px) {
+            .cart-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .cart-summary {
+                position: static;
+            }
+            
+            .cart-item {
+                grid-template-columns: 80px 1fr;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .item-image {
+                height: 80px;
+            }
+        }
+    </style>
+    <div class="container py-5">
+        <h1>Your Shopping Cart</h1>
+        
+        <!-- Empty Cart State (commented out) -->
+        <!-- <div class="empty-cart">
+            <h2>Your cart is empty</h2>
+            <p>Looks like you haven't added any items to your cart yet.</p>
+            <button class="shop-btn">Start Shopping</button>
+        </div> -->
+        
+        <div class="cart-layout">
+            <div class="cart-items">
+                <% 
+                var sum=0;
+                for(var i=0;i<cart_data.length;i++){
+                    sum=sum + (cart_data[i].product_price * cart_data[i].product_qty);
+                %>
+
+                <div class="cart-item">
+                    <img src="/products/<%- cart_data[i].product_image%>" alt="Premium Wireless Headphones" class="item-image">
+                    <div class="item-details">
+                        <div class="item-title"><%- cart_data[i].product_name%></div>
+                        <div class="item-price">&#8377 <%- cart_data[i].product_price %></div>
+                        <div class="item-actions">
+                            <div>
+                                <span><span style="font-weight: 600;">Quantity:</span> <%- cart_data[i].product_qty %></span> <span style="font-weight: 400; font-size: 20px;">||</span> <span><span style="font-weight: 600;">Size:</span> <%- cart_data[i].product_size%></span>
+                            </div>
+                            <a href="/delete_cart/<%- cart_data[i].cart_id %>">
+                                <button class=" btn btn-sm remove-btn">
+                                    <i class="fa-solid fa-trash" style="font-size: 1.2rem;"></i>
+                                </button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+            </div>
+            
+            <div class="cart-summary">
+                <div class="summary-title">Order Summary</div>    
+                <div class="summary-row">
+                    <span>Subtotal (<%- i %> items)</span>
+                    <span>&#8377 <%- sum %> </span>
+                </div>
+                
+                <div class="summary-row">
+                    <span>Shipping (Free)</span>
+                    <span>&#8377 0</span>
+                </div>
+                
+                <div class="summary-row">
+                    <span>Tax</span>
+                    <span>&#8377 0</span>
+                </div>
+                
+                <div class="summary-total">
+                    <span>Total</span>
+                    <span>&#8377 <%- sum %></span>
+                </div>
+                
+                <% if (is_login) { %>
+                    <button class="checkout-btn" data-bs-toggle="modal" data-bs-target="#getuserAddressModel">
+                        Proceed to Checkout
+                    </button>
+                <% } else { %>
+                    <a data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        <button class="checkout-btn">Proceed to Checkout</button>
+                    </a>
+                <% } %>
+
+                <a href="/" class="continue-shopping">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7"></path>
+                    </svg>
+                    Continue Shopping
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Address Modal -->
+<div class="modal fade" id="getuserAddressModel" aria-labelledby="getuserAddressModelLabel" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form action="/place_order" method="POST">
+          <div class="modal-header">
+            <h5 class="modal-title" id="getuserAddressModelLabel">Fill Your Shipping Details</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="fullName" class="form-label">Full Name</label>
+                <input type="text" id="fullName" name="fullName" class="form-control" />
+              </div>
+              <div class="col-md-6">
+                <label for="mobile" class="form-label">Mobile Number</label>
+                <input type="tel" id="mobile" name="mobile" class="form-control" />
+              </div>
+              <div class="col-md-6">
+                <label for="pincode" class="form-label">Pincode</label>
+                <input type="text" id="pincode" name="pincode" class="form-control" onkeyup="getCityStateCountry()" />
+              </div>
+              <div class="col-md-6">
+                <label for="city" class="form-label">City</label>
+                <input type="text" id="city" name="city" class="form-control" readonly />
+              </div>
+              <div class="col-12">
+                <label for="address" class="form-label">Address</label>
+                <textarea id="address" name="address" class="form-control" rows="2"></textarea>
+              </div>
+              <div class="col-md-6">
+                <label for="state" class="form-label">State</label>
+                <input type="text" id="state" name="state" class="form-control" readonly />
+              </div>
+              <div class="col-md-6">
+                <label for="country" class="form-label">Country</label>
+                <input type="text" id="country" name="country" class="form-control" readonly />
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Place Order</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+<%- include("footer.ejs") %>
+
+<!-- Optional Modal JS Function -->
+<script>
+  function redirect_to_buy_now() {
+    const otpModalEl = document.getElementById("otpModal");
+    if (otpModalEl) {
+      let otpModal = bootstrap.Modal.getInstance(otpModalEl);
+      if (!otpModal) {
+        otpModal = new bootstrap.Modal(otpModalEl);
+      }
+      otpModal.hide();
+    }
+
+    const addressModalEl = document.getElementById("getuserAddressModel");
+    if (addressModalEl) {
+      let addressModal = bootstrap.Modal.getInstance(addressModalEl);
+      if (!addressModal) {
+        addressModal = new bootstrap.Modal(addressModalEl);
+      }
+      addressModal.show();
+    }
+  }
+</script>

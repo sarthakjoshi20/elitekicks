@@ -1,0 +1,166 @@
+<%- include("navbar.ejs") %>
+
+    <style>
+        .checkout-container {
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+        .checkout-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .product-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .total-amount {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .btn-checkout {
+            background-color: #0d6efd;
+            color: white;
+            font-weight: 500;
+            padding: 10px;
+        }
+        .btn-checkout:hover {
+            background-color: #0b5ed7;
+        }
+    </style>
+    <div class="container checkout-container">
+        <form action="/checkout" method="post">
+            <div class="row g-4">
+            <!-- Shipping Address Form -->
+            <div class="col-lg-7">
+                <div class="card checkout-card mb-4">
+                    <div class="card-body p-4">
+                        <h2 class="section-title">Shipping Information</h2>
+                        <form>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="fullName" class="form-label">Full Name</label>
+                                    <input type="text" class="form-control" id="fullName" name="fullName" >
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="mobile" class="form-label">Mobile Number</label>
+                                    <input type="tel" class="form-control" id="mobile" name="mobile" >
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="pincode" class="form-label">Pincode</label>
+                                    <input type="text" class="form-control" id="pincode" name="pincode" onkeyup="getCityStateCountry()">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="city" class="form-label">City</label>
+                                    <input type="text" class="form-control" id="city" name="city" readonly>
+                                </div>
+                                <div class="col-12">
+                                    <label for="address" class="form-label">Address</label>
+                                    <textarea class="form-control" id="address" rows="2" name="address" ></textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="state" class="form-label">State</label>
+                                    <input type="text" class="form-control" id="state" name="state" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="state" class="form-label">Country</label>
+                                    <input type="text" class="form-control" id="country" name="country" readonly>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <input type="hidden" name="product_id" value="<%- product[0].product_id %>">
+            <input type="hidden" name="qty" value="<%- url_data.qty %>">
+            <input type="hidden" name="size" value="<%- url_data.size %>">
+
+            <!-- Order Summary -->
+            <div class="col-lg-5">
+                <div class="card checkout-card mb-4">
+                    <div class="card-body p-4">
+                        <h2 class="section-title">Order Summary</h2>
+                        
+                        <!-- Product List -->
+                        <div class="mb-4">
+                            <div class="d-flex mb-3">
+                                <img src="/products/<%- product[0].product_main_image %>" alt="Product" class="product-img me-3">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1"><%- product[0].product_name %></h6>
+                                    <small class="text-muted">Color: <%- product[0].product_color %> | Size: <%- url_data.size %></small>
+                                    <div class="d-flex justify-content-between align-items-center mt-2">
+                                        <span class="fw-bold">Qty: <%- url_data.qty %></span>
+                                        <span class="fw-bold">₹ <%- product[0].product_price %></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        
+                        <!-- Order Summary -->
+                        <div class="border-top pt-3">
+                            <div class="summary-item">
+                                <span>Subtotal</span>
+                                <span>₹ <%- product[0].product_price * url_data.qty %></span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Shipping</span>
+                                <span>Free</span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Tax</span>
+                                <span>₹ 0</span>
+                            </div>
+                            <div class="summary-item total-amount">
+                                <span>Total</span>
+                                <span>₹ <%- product[0].product_price * url_data.qty %></span>
+                            </div>
+                        </div>
+                        
+                        <!-- Checkout Button -->
+                        <button class="btn btn-checkout w-100 mt-2">Place Order</button>
+                    </div>
+                    <span class="ps-4 pb-3"><i class="fa-solid fa-lock"></i> Your payment is secure and trusted.</span>
+                </div>
+            </div>
+            </div>
+        </form>
+    </div>
+
+<%- include("footer.ejs") %>
+
+
+
+<script>
+    function getCityStateCountry(){
+        var pincode=document.getElementById("pincode").value;
+        $.ajax({
+            url:`https://api.postalpincode.in/pincode/${pincode}`,
+        }).done(function(result){
+            if(result[0].Status=="Success"){
+                var city=result[0].PostOffice[0].Block;
+                var state=result[0].PostOffice[0].State;
+                var country=result[0].PostOffice[0].Country;
+                document.getElementById("city").value=city;
+                document.getElementById("state").value=state;
+                document.getElementById("country").value=country;
+            }
+        });
+    }
+</script>

@@ -1,0 +1,335 @@
+<%- include("navbar.ejs") %>
+
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f5f5;
+        color: #333;
+        margin: 0;
+    }
+    
+    .profile-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 30px;
+        padding: 20px;
+    }
+    
+    .profile-sidebar {
+        background: white;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        text-align: center;
+        height: fit-content;
+    }
+    
+    .profile-pic {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 20px;
+        border: 5px solid #f0f0f0;
+    }
+    
+    .profile-name {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+    
+    .profile-email {
+        color: #666;
+        margin-bottom: 20px;
+    }
+    
+    .profile-menu {
+        list-style: none;
+        padding: 0;
+        margin-top: 30px;
+        text-align: left;
+    }
+    
+    .profile-menu li {
+        margin-bottom: 15px;
+    }
+    
+    .profile-menu a {
+        display: block;
+        padding: 10px 15px;
+        color: #555;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: all 0.3s;
+    }
+    
+    .profile-menu a:hover, .profile-menu a.active {
+        background: #f0f7ff;
+        color: #0066cc;
+    }
+    
+    .profile-menu i {
+        margin-right: 10px;
+        width: 20px;
+        text-align: center;
+    }
+    
+    .orders-content {
+        background: white;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    .section-title {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .order-filters {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+    
+    .filter-btn {
+        padding: 8px 15px;
+        border-radius: 20px;
+        border: 1px solid #ddd;
+        background: white;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .filter-btn:hover, .filter-btn.active {
+        background: #0066cc;
+        color: white;
+        border-color: #0066cc;
+    }
+    
+    .orders-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .orders-table th {
+        text-align: left;
+        padding: 12px 15px;
+        background: #f9f9f9;
+        font-weight: 500;
+    }
+    
+    .orders-table td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .order-status {
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+    
+    .status-completed {
+        background: #e6f7ee;
+        color: #00a651;
+    }
+    
+    .status-processing {
+        background: #e6f0ff;
+        color: #0066cc;
+    }
+    
+    .status-shipped {
+        background: #fff8e6;
+        color: #ff9900;
+    }
+    
+    .status-delivered {
+        background: #e6f7ee;
+        color: #00a651;
+    }
+    
+    .status-cancelled {
+        background: #ffebee;
+        color: #ff4444;
+    }
+    
+    .order-action {
+        color: #0066cc;
+        text-decoration: none;
+        font-weight: 500;
+        margin-right: 15px;
+    }
+    
+    .order-img {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 5px;
+        margin-right: 10px;
+    }
+    
+    .order-items {
+        display: flex;
+        align-items: center;
+    }
+    
+    .order-items-count {
+        background: #f0f0f0;
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        margin-left: 5px;
+    }
+    
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 30px;
+        gap: 10px;
+    }
+    
+    .page-btn {
+        padding: 8px 15px;
+        border: 1px solid #ddd;
+        background: white;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    
+    .page-btn.active {
+        background: #0066cc;
+        color: white;
+        border-color: #0066cc;
+    }
+    
+    @media (max-width: 768px) {
+        .profile-container {
+            grid-template-columns: 1fr;
+        }
+        
+        .order-filters {
+            flex-direction: column;
+        }
+        
+        .orders-table {
+            display: block;
+            overflow-x: auto;
+        }
+    }
+</style>
+
+<div class="profile-container py-5">
+    <!-- Profile Sidebar -->
+    <div class="profile-sidebar">
+        <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Profile Picture" class="profile-pic">
+        <h2 class="profile-name">Vikas Thore</h2>
+        <p class="profile-email">vikasthore123@gmail.com</p>
+        
+        <ul class="profile-menu">
+            <li><a href="/user_profile"><i class="fas fa-user"></i> My Profile</a></li>
+            <li><a href="/my_orders" class="active"><i class="fas fa-shopping-bag"></i> My Orders</a></li>
+            <li><a href="#"><i class="fas fa-heart"></i> Wishlist</a></li>
+            <li><a href="#"><i class="fas fa-map-marker-alt"></i> Addresses</a></li>
+            <li><a href="#"><i class="fas fa-lock"></i> Change Password</a></li>
+            <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+    
+    <!-- Orders Content -->
+    <div class="orders-content">
+        <h2 class="section-title">My Orders</h2>
+        
+    <div class="row g-4">
+      <% if(orders.length > 0) { %>
+        <% orders.forEach(order => { %>
+          <div class="col-md-6 col-lg-6">
+            <div class="card shadow-lg h-100">
+              <div class="card-body">
+                <p class="card-title"><strong>Order Id:</strong> ELITEKICKS<%= order.order_id %> <span class="badge bg-primary" style="float: right; text-transform: capitalize;"><%= order.order_status %></span></p>
+                <p class="card-subtitle mb-3 text-muted">
+                  <strong>Order Date: </strong><%= new Date(order.order_date).toLocaleDateString("en-IN") %>
+                </p>
+
+                <p><strong>Name:</strong> <%= order.fullname %></p>
+                <p><strong>Mobile:</strong> <%= order.mobile %></p>
+                <div class="mb-2">
+                  <span class="fw-bold text-success">Total: ₹<%= order.total_amount %></span>
+                  <% if(order.payment_status === 'paid'){ %>
+                    <span class="badge bg-success" style="float: right;">Paid</span>
+                  <% } else { %>
+                    <span class="badge bg-danger" style="float: right;">Unpaid</span>
+                  <% } %>
+                  <span class="badge bg-info me-1" style="float: right;"><%= order.payment_method %></span>
+                </div>
+              </div>
+              <div class="card-footer text-end">
+                <a href="/view_orders/<%= order.order_id %>" class="btn btn-sm btn-outline-primary">View Details</a>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <div class="col-12">
+          <div class="alert alert-info text-center">You have no orders yet.</div>
+        </div>
+      <% } %>
+    </div>
+</div>
+
+<style>
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch; /* For smooth scrolling on iOS */
+    }
+    
+    .orders-table {
+        width: 100%;
+        min-width: 600px; /* Minimum width before scrolling kicks in */
+        border-collapse: collapse;
+    }
+    
+    /* Rest of your existing table styles */
+    .orders-table th {
+        text-align: left;
+        padding: 12px 15px;
+        background: #f9f9f9;
+        font-weight: 500;
+        white-space: nowrap;
+    }
+    
+    .orders-table td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #eee;
+        white-space: nowrap;
+    }
+    
+    /* For the items column only, allow text wrapping */
+    .order-items {
+        white-space: normal !important;
+    }
+    
+    @media (min-width: 992px) {
+        .orders-table {
+            min-width: 100%; /* Reset to normal on larger screens */
+        }
+    }
+</style>
+    </div>
+</div>
+
+<%- include("footer.ejs") %>

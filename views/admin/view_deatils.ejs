@@ -1,0 +1,212 @@
+<%- include("navbar.ejs") %>
+    <div id="content">
+        
+        <div class="container" id="invoice">
+                <!-- Invoice Header -->
+                <div class="invoice-header d-flex justify-content-between align-items-center mb-4 p-4 bg-light rounded">
+                <div>
+                    <p class="text-muted mb-0">Order Id: ELITEKICKS<%= orders[0].order_id %></p>
+                </div>
+                <div class="text-end">
+                    <% if(orders[0].order_status == "placed"){ %>
+                    <a href="/admin/change_order_to_reject/<%-orders[0].order_id %>" style="text-decoration: none;">
+                        <button class="btn btn-danger">
+                        <i class="bi bi-x-circle me-2"></i>Reject Order
+                        </button>
+                    </a>
+                    <a href="/admin/change_order_to_dispatch/<%-orders[0].order_id %>" style="text-decoration: none;">
+                        <button class="btn btn-primary ms-2">
+                        <i class="bi bi-truck me-2"></i>Dispatch Order
+                        </button>
+                    </a>
+                    <% }else if(orders[0].order_status == "dispatched"){ %>
+                    <a href="/admin/change_order_to_reject/<%-orders[0].order_id %>" style="text-decoration: none;">
+                        <button class="btn btn-danger">
+                        <i class="bi bi-x-circle me-2"></i>Cancel Order
+                        </button>
+                    </a>
+                    <a href="/admin/change_order_to_delivered/<%-orders[0].order_id %>" style="text-decoration: none;">
+                        <button class="btn btn-primary ms-2">
+                        <i class="bi bi-truck me-2"></i>Delivered Order
+                        </button>
+                    </a>
+                    <% }else if(orders[0].order_status == "delivered"){ %>
+                        <button class="btn btn-success">
+                            <i class="bi bi-check-circle me-2"></i>Succfully Delivered
+                        </button>
+                    <% } else if(orders[0].order_status == "cancelled"){ %>
+                        <button class="btn btn-danger">
+                            <i class="bi bi-check-circle me-2"></i>Cancelled Order
+                        </button>
+                    <% } %>
+                </div>
+                </div>
+
+                <!-- Company and Order Info -->
+                <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card">
+                    <div class="card-header bg-light">
+                        <h6 class="mb-0"><i class="fas fa-user me-2"></i>Customer Details:</h6>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="text-primary"><%= orders[0].fullname %></h5>
+                        <p class="mb-1"><%= orders[0].area %></p>
+                        <p class="mb-1"><%= orders[0].city %>, <%= orders[0].state %>, <%= orders[0].country %> - <%= orders[0].pincode %></p>
+                        <p class="mb-0">Phone: <%= orders[0].mobile %></p>
+                    </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card">
+                    <div class="card-header bg-light">
+                        <h6 class="mb-0"><i class="fas fa-receipt me-2"></i>Order Details:</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                        <div class="col-6">
+                            <p class="mb-1"><strong>Order Date:</strong></p>
+                        </div>
+                        <div class="col-6 text-end">
+                            <p class="mb-1"><%= orders[0].order_date.toDateString() %></p>
+                        </div>
+                        </div>
+                        <div class="row">
+                        <div class="col-6">
+                            <p class="mb-1"><strong>Payment Method:</strong></p>
+                        </div>
+                        <div class="col-6 text-end">
+                            <p class="mb-1"><%= orders[0].payment_method %></p>
+                        </div>
+                        </div>
+                        <div class="row">
+                        <div class="col-6">
+                            <p class="mb-1"><strong>Payment Status:</strong></p>
+                        </div>
+                        <div class="col-6 text-end">
+                            <p class="mb-1">
+                            <span class="badge <%= orders[0].payment_status === 'paid' ? 'bg-success' : 'bg-warning' %>">
+                                <%= orders[0].payment_status %>
+                            </span>
+                            </p>
+                        </div>
+                        </div>
+                        <div class="row">
+                        <div class="col-6">
+                            <p class="mb-1"><strong>Transaction Id:</strong></p>
+                        </div>
+                        <div class="col-6 text-end">
+                            <p class="mb-1">
+                            <span class="badge bg-info">
+                                <%= orders[0].transaction_id %>
+                            </span>
+                            </p>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+
+                </div>
+
+                <!-- Ordered Products Table -->
+                <div class="card mb-4">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0"><i class="fas fa-shopping-cart me-2"></i>Order Items</h6>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">#</th>
+                            <th>Product</th>
+                            <th class="text-end">Price (₹)</th>
+                            <th class="text-center">Qty</th>
+                            <th class="text-end pe-4">Total (₹)</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <% for(var i=0;i<info.length;i++) { %>
+                            <tr>
+                            <td class="ps-4"><%= i+1 %></td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-0"><%= info[i].product_name %></h6>
+                                    <small class="text-muted">SIZE: <%= info[i].product_size %></small>
+                                </div>
+                                </div>
+                            </td>
+                            <td class="text-end">₹<%= info[i].product_price %></td>
+                            <td class="text-center"><%= info[i].product_qty %></td>
+                            <td class="text-end pe-4">₹<%= info[i].product_total %></td>
+                            </tr>
+                        <% } %>
+                        </tbody>
+                        <tfoot class="table-light">
+                        <tr>
+                            <td colspan="4" class="text-end fw-bold ps-4">Grand Total</td>
+                            <td class="text-end fw-bold pe-4">₹<%= orders[0].total_amount %></td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <%- include("footer.ejs") %>
+
+            <!-- Print Styling -->
+            <style>
+            @media print {
+                navbar, footer, button {
+                display: none !important;
+                }
+                #invoice {
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                }
+                .card {
+                border: none !important;
+                box-shadow: none !important;
+                }
+                .card-header {
+                background-color: #f8f9fa !important;
+                border-bottom: 1px solid #dee2e6 !important;
+                }
+                .table-light {
+                background-color: #f8f9fa !important;
+                }
+            }
+
+            /* Enhanced styling for the invoice */
+            .invoice-header {
+                border-left: 4px solid #0d6efd;
+            }
+            
+            .card {
+                box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+                border: 1px solid #e3e6f0;
+            }
+            
+            .card-header {
+                border-bottom: 1px solid #e3e6f0;
+                font-weight: 600;
+            }
+            
+            .table th {
+                font-weight: 600;
+                text-transform: uppercase;
+                font-size: 0.85rem;
+                letter-spacing: 0.5px;
+            }
+            </style>
+
+            <!-- Include Font Awesome for icons -->
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    </div>
+<%- include("footer.ejs") %>

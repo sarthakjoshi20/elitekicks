@@ -1,38 +1,29 @@
 <%- include("navbar.ejs") %>
 
 <style>
-    /* ===== Modern Base Styles ===== */
+    /* ===== Base Styles ===== */
     :root {
         --primary-color: #2d3436;
-        --secondary-color: #0984e3;
-        --accent-color: #d63031;
-        --light-gray: #f5f6fa;
-        --medium-gray: #dfe6e9;
-        --dark-gray: #636e72;
-        --text-color: #2d3436;
-        --text-light: #636e72;
+        --secondary-color: #3498db;
+        --accent-color: #e74c3c;
+        --light-gray: #f8f9fa;
+        --medium-gray: #e9ecef;
+        --dark-gray: #6c757d;
+        --text-color: #212529;
         --white: #ffffff;
-        --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-        --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        --border-radius: 12px;
-    }
-    
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, 
-                     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        --border-radius: 8px;
+        --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        --transition: all 0.2s ease;
     }
     
     body {
+        font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
         color: var(--text-color);
-        line-height: 1.6;
         background-color: var(--light-gray);
-        -webkit-font-smoothing: antialiased;
+        line-height: 1.6;
     }
     
-    /* ===== Main Container ===== */
+    /* ===== Product Container ===== */
     .product-container {
         max-width: 1200px;
         margin: 2rem auto;
@@ -43,114 +34,83 @@
     .product-card {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 3rem;
+        gap: 2rem;
         background: var(--white);
         border-radius: var(--border-radius);
         box-shadow: var(--box-shadow);
         overflow: hidden;
-        position: relative;
-    }
-    
-    .product-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 5px;
-        background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
     }
     
     /* ===== Product Gallery ===== */
     .product-gallery {
-        padding: 2rem;
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
+        padding: 1.5rem;
     }
     
     .main-image-container {
-        position: relative;
-        overflow: hidden;
-        border-radius: var(--border-radius);
         background: var(--light-gray);
+        border-radius: var(--border-radius);
         aspect-ratio: 1/1;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 2rem;
+        margin-bottom: 1rem;
     }
     
     .main-image {
         max-width: 100%;
         max-height: 100%;
         object-fit: contain;
-        mix-blend-mode: multiply;
-        transition: transform 0.5s ease;
     }
     
     .thumbnail-container {
         display: flex;
-        gap: 1rem;
-        padding: 0.5rem;
+        gap: 0.75rem;
     }
     
     .thumbnail {
-        width: 80px;
-        height: 80px;
+        width: 70px;
+        height: 70px;
         object-fit: cover;
-        border-radius: 8px;
+        border-radius: 4px;
         cursor: pointer;
-        border: 2px solid var(--medium-gray);
+        border: 1px solid var(--medium-gray);
         transition: var(--transition);
     }
     
     .thumbnail:hover, .thumbnail.active {
         border-color: var(--secondary-color);
-        transform: scale(1.05);
     }
     
     /* ===== Product Details ===== */
     .product-details {
-        padding: 2.5rem 2rem 2.5rem 0;
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .product-header {
-        margin-bottom: 0.5rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 1px solid var(--medium-gray);
+        padding: 1.5rem;
     }
     
     .product-title {
-        font-size: 2.2rem;
-        font-weight: 700;
-        color: var(--primary-color);
+        font-size: 1.8rem;
+        font-weight: 600;
         margin-bottom: 0.5rem;
-        line-height: 1.3;
+        color: var(--primary-color);
     }
     
     .product-subtitle {
         color: var(--dark-gray);
-        font-size: 1.1rem;
-        font-weight: 400;
+        margin-bottom: 1.5rem;
     }
     
     .price-container {
-        display: flex;
-        align-items: center;
+        margin-bottom: 1.5rem;
     }
     
     .current-price {
-        font-size: 2rem;
+        font-size: 1.5rem;
         font-weight: 700;
         color: var(--accent-color);
-        margin-right: 1rem;
+        margin-right: 0.75rem;
     }
     
     .original-price {
-        font-size: 1.4rem;
+        font-size: 1.2rem;
         text-decoration: line-through;
         color: var(--dark-gray);
     }
@@ -158,79 +118,85 @@
     .discount-badge {
         background: var(--accent-color);
         color: var(--white);
-        padding: 0.3rem 0.8rem;
-        border-radius: 20px;
-        font-size: 0.9rem;
-        margin-left: 1rem;
-        font-weight: 600;
+        padding: 0.2rem 0.6rem;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        margin-left: 0.75rem;
+        font-weight: 500;
     }
     
     .product-description {
-        color: var(--text-light);
-        line-height: 1.8;
-        margin-bottom: 0.5rem;
+        color: var(--text-color);
+        margin-bottom: 1.5rem;
+        line-height: 1.7;
     }
     
-    .section-title {
-        font-size: 1.2rem;
-        font-weight: 600;
-        margin-bottom: 1.2rem;
-        color: var(--primary-color);
-        position: relative;
-        padding-left: 1rem;
-    }
-    
-    .section-title::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 4px;
-        height: 18px;
-        background: var(--secondary-color);
-        border-radius: 2px;
-    }
-    
-    .features-list {
-        list-style-type: none;
-    }
-    
-    .features-list li {
-        margin-bottom: 0.8rem;
+    /* ===== Size and Quantity Selectors ===== */
+    .selector-group {
         display: flex;
-        align-items: flex-start;
-        color: var(--text-light);
+        gap: 1rem;
+        margin-bottom: 1.5rem;
     }
     
-    .features-list li::before {
-        content: '✓';
-        color: var(--secondary-color);
-        font-weight: bold;
-        display: inline-block;
-        width: 1.5em;
-        margin-right: 0.5rem;
+    .selector {
+        flex: 1;
+    }
+    
+    .selector label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+    
+    .form-select {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid var(--medium-gray);
+        border-radius: var(--border-radius);
+    }
+    
+    .quantity-control {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .quantity-btn {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--medium-gray);
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    
+    .quantity-input {
+        width: 50px;
+        text-align: center;
+        padding: 0.5rem;
+        border: 1px solid var(--medium-gray);
+        border-radius: 4px;
     }
     
     /* ===== Action Buttons ===== */
     .action-buttons {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
+        display: flex;
         gap: 1rem;
+        margin-top: 2rem;
     }
     
-    .btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 1rem 1.5rem;
+    .btn-info {
+        flex: 1;
+        padding: 0.75rem;
         border-radius: var(--border-radius);
-        font-size: 1rem;
-        font-weight: 600;
+        font-weight: 500;
+        text-align: center;
         cursor: pointer;
         transition: var(--transition);
         border: none;
-        text-align: center;
     }
     
     .btn-primary {
@@ -239,9 +205,7 @@
     }
     
     .btn-primary:hover {
-        background-color: #0a7bd1;
-        transform: translateY(-3px);
-        box-shadow: 0 8px 20px rgba(9, 132, 227, 0.3);
+        background-color: #2980b9;
     }
     
     .btn-accent {
@@ -250,116 +214,58 @@
     }
     
     .btn-accent:hover {
-        background-color: #c92a2a;
-        transform: translateY(-3px);
-        box-shadow: 0 8px 20px rgba(214, 48, 49, 0.3);
-    }
-    
-    .btn-icon {
-        margin-right: 0.5rem;
-        font-size: 1.2rem;
-    }
-    
-    /* ===== Product Meta ===== */
-    .product-meta {
-        margin-top: 2.5rem;
-        padding-top: 1.5rem;
-        border-top: 1px solid var(--medium-gray);
-    }
-    
-    .meta-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1.5rem;
-    }
-    
-    .meta-item {
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .meta-label {
-        font-weight: 600;
-        color: var(--text-color);
-        font-size: 0.95rem;
-        margin-bottom: 0.5rem;
-    }
-    
-    .meta-value {
-        color: var(--text-light);
-        font-size: 0.95rem;
+        background-color: #c0392b;
     }
     
     /* ===== Responsive Design ===== */
     @media (max-width: 992px) {
         .product-card {
             grid-template-columns: 1fr;
-            gap: 1.5rem;
-        }
-        
-        .product-details {
-            padding: 0 2rem 2.5rem;
-        }
-        
-        .product-gallery {
-            padding-bottom: 0;
         }
     }
     
     @media (max-width: 768px) {
         .product-container {
             padding: 0 1rem;
-            margin: 1rem auto;
         }
         
         .product-title {
-            font-size: 1.8rem;
-        }
-        
-        .current-price {
-            font-size: 1.6rem;
-        }
-        
-        .original-price {
-            font-size: 1.2rem;
+            font-size: 1.5rem;
         }
         
         .action-buttons {
-            grid-template-columns: 1fr;
+            flex-direction: column;
         }
     }
     
     @media (max-width: 576px) {
-        .meta-grid {
-            grid-template-columns: 1fr;
+        .selector-group {
+            flex-direction: column;
         }
         
         .thumbnail {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
         }
     }
 </style>
 
 <div class="product-container">
     <div class="product-card">
-        <div class="product-gallery" style="margin-top:40px;">
+        <div class="product-gallery">
             <div class="main-image-container">
                 <img src="/products/<%- product[0].product_main_image %>" class="main-image" alt="<%- product[0].product_name %>" id="mainProductImage">
             </div>
             <div class="thumbnail-container">
                 <img src="/products/<%- product[0].product_main_image %>" class="thumbnail active" alt="Thumbnail" onclick="changeMainImage(this)">
-                <!-- Additional thumbnails would go here -->
                 <img src="/products/<%- product[0].product_main_image %>" class="thumbnail" alt="Thumbnail 2" onclick="changeMainImage(this)">
                 <img src="/products/<%- product[0].product_main_image %>" class="thumbnail" alt="Thumbnail 3" onclick="changeMainImage(this)">
             </div>
         </div>
         
         <div class="product-details">
-            <div class="product-header">
-                <h1 class="product-title"><%- product[0].product_name %></h1>
-                <p class="product-subtitle"><%- product[0].product_brand_name %></p>
-            </div>
+            <h1 class="product-title"><%- product[0].product_name %></h1>
+            <p class="product-subtitle"><%- product[0].product_brand_name %></p>
             
             <div class="price-container">
                 <span class="current-price">₹<%- product[0].product_price.toFixed(2) %></span>
@@ -375,17 +281,54 @@
                 <p><%- product[0].product_description %></p>
             </div>
             
+            <div class="selector-group">
+                <div class="selector">
+                    <label for="size">Size</label>
+                    <select name="size" id="size" class="form-select">
+                        <% if(product[0].product_for == 'Male') { %>
+                        <option>Mens: 7</option>
+                        <option>Mens: 8</option>
+                        <option>Mens: 9</option>
+                        <option>Mens: 10</option>
+                        <% } %>
+                        <% if(product[0].product_for == 'Female') { %>
+                        <option>Womens: 5</option>
+                        <option>Womens: 6</option>
+                        <option>Womens: 7</option>
+                        <option>Womens: 8</option>
+                        <option>Womens: 9</option>
+                        <option>Womens: 10</option>
+                        <% } %>
+                        <% if(product[0].product_for == 'Kids') { %>
+                        <option>Kids: 11</option>
+                        <option>Kids: 12</option>
+                        <option>Kids: 13</option>
+                        <option>Kids: 14</option>
+                        <% } %>
+                    </select>
+                </div>
+                
+                <div class="selector">
+                    <label for="qty">Quantity</label>
+                    <div class="quantity-control">
+                        <button class="quantity-btn" onclick="changeQty(-1)">-</button>
+                        <input type="text" id="qty" name="qty" class="quantity-input" value="1" min="1" readonly>
+                        <button class="quantity-btn" onclick="changeQty(1)">+</button>
+                    </div>
+                </div>
+            </div>
+            
             <div class="action-buttons">
-                <a href="/add_to_cart/<%- product[0].product_id %>" class="btn btn-primary">
-                    <span class="btn-icon">🛒</span> Add to Cart
+                <a class="btn btn-info btn-primary" onclick="redirect_to_add_to_cart()">
+                    Add to Cart
                 </a>
                 <% if(is_login){ %>
-                    <a href="/buy_now/<%- product[0].product_id %>" class="btn btn-accent">
-                        <span class="btn-icon">💳</span> Buy Now
-                    </a>
+                    <button class="btn btn-info btn-accent" onclick="redirect_to_buy_now()">
+                        Buy Now
+                    </button>
                 <% }else{ %>
-                    <a href="/login" class="btn btn-accent" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                        <span class="btn-icon">💳</span> Buy Now
+                    <a href="" class="btn btn-info btn-accent" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        Buy Now
                     </a>
                 <% } %>
             </div>
@@ -393,7 +336,7 @@
     </div>
 </div>
 
-<!-- Modal -->
+<!-- Modals (unchanged from original) -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog model-sm">
       <div class="modal-content">
@@ -408,7 +351,7 @@
                     <input type="email" class="form-control" id="email" name="email" placeholder="abcdef123@gmail.com">
                 </div>
                 <div class="d-flex justify-content-end" style="border-top:1px solid #dee2e6;">
-                    <button class="btn btn-primary mt-3 pt-2 pb-2">Next</button>
+                    <button class="btn btn-primary mt-3">Next</button>
                 </div>
             </form>
         </div>
@@ -416,7 +359,6 @@
     </div>
 </div>
 
-<!-- Modal -->
 <div class="modal fade" id="getuserotpModel">
     <div class="modal-dialog model-sm">
       <div class="modal-content">
@@ -428,15 +370,15 @@
             <form action="/verify_otp" method="post" onsubmit="verifyotp(event)">
                 <div class="mb-3 text-center">
                     <label for="otp1" class="form-label mb-3" style="font-weight:600;">Enter Your OTP</label>
-                    <div class="otp-input-group" style="display:flex; justify-content:center; gap:0.7rem;">
-                        <input type="text" class="form-control otp-input" id="otp1" name="otp1" maxlength="1" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" required style="width:48px; text-align:center; font-size:1.5rem; border-radius:8px;" />
-                        <input type="text" class="form-control otp-input" id="otp2" name="otp2" maxlength="1" inputmode="numeric" pattern="[0-9]*" required style="width:48px; text-align:center; font-size:1.5rem; border-radius:8px;" />
-                        <input type="text" class="form-control otp-input" id="otp3" name="otp3" maxlength="1" inputmode="numeric" pattern="[0-9]*" required style="width:48px; text-align:center; font-size:1.5rem; border-radius:8px;" />
-                        <input type="text" class="form-control otp-input" id="otp4" name="otp4" maxlength="1" inputmode="numeric" pattern="[0-9]*" required style="width:48px; text-align:center; font-size:1.5rem; border-radius:8px;" />
+                    <div class="otp-input-group">
+                        <input type="text" class="form-control otp-input" id="otp1" name="otp1" maxlength="1" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" required />
+                        <input type="text" class="form-control otp-input" id="otp2" name="otp2" maxlength="1" inputmode="numeric" pattern="[0-9]*" required />
+                        <input type="text" class="form-control otp-input" id="otp3" name="otp3" maxlength="1" inputmode="numeric" pattern="[0-9]*" required />
+                        <input type="text" class="form-control otp-input" id="otp4" name="otp4" maxlength="1" inputmode="numeric" pattern="[0-9]*" required />
                     </div>
                 </div>
                 <div class="d-flex justify-content-end" style="border-top:1px solid #dee2e6;">
-                    <button class="btn btn-primary mt-3 pt-2 pb-2">Verify OTP</button>
+                    <button class="btn btn-primary mt-3" >Verify OTP</button>
                 </div>
             </form>
         </div>
@@ -444,78 +386,42 @@
     </div>
 </div>
 
-
 <script>
     // Image gallery functionality
     function changeMainImage(thumbnail) {
-        // Remove active class from all thumbnails
         document.querySelectorAll('.thumbnail').forEach(img => {
             img.classList.remove('active');
         });
-        
-        // Add active class to clicked thumbnail
         thumbnail.classList.add('active');
-        
-        // Change main image
-        const mainImage = document.getElementById('mainProductImage');
-        mainImage.src = thumbnail.src;
-        
-        // Add slight zoom effect
-        mainImage.style.transform = 'scale(1.05)';
-        setTimeout(() => {
-            mainImage.style.transform = 'scale(1)';
-        }, 300);
+        document.getElementById('mainProductImage').src = thumbnail.src;
     }
     
     // Quantity selector functionality
-    function updateQuantity(change) {
-        const quantityInput = document.getElementById('quantity');
-        let newQuantity = parseInt(quantityInput.value) + change;
-        if (newQuantity < 1) newQuantity = 1;
-        if (newQuantity > 10) newQuantity = 10;
-        quantityInput.value = newQuantity;
+    function changeQty(delta) {
+        var qtyInput = document.getElementById('qty');
+        var current = parseInt(qtyInput.value) || 1;
+        var newQty = current + delta;
+        if (newQty < 1) newQty = 1;
+        qtyInput.value = newQty;
+    }
+</script>
+
+<script>
+    function redirect_to_buy_now(){
+        var size=document.getElementById("size").value;
+        var qty=document.getElementById("qty").value;
+        var url=`/buy_now/<%-product[0].product_id%>?size=${size}&qty=${qty}`;
+        
+        location.href=url;
     }
 
-    function sendotp(event){
-        event.preventDefault();
-        var email=document.getElementById("email").value;
-
-        //send otp to email
-        //post
-        $.ajax({
-            url:"/send_otp_mail",
-            type:"post",
-            data:{"email":email},
-        }).done(function(res){
-            console.log(res);
-            var exampleModal = new bootstrap.Modal(document.getElementById('exampleModal'));
-            exampleModal.hide();
-
-            //show otp model
-            var otpModel= document.getElementById('getuserotpModel');
-            var otpModel = new bootstrap.Modal(document.getElementById('getuserotpModel'));
-            otpModel.show();
-        })
+    function redirect_to_add_to_cart(){
+        var size=document.getElementById("size").value;
+        var qty=document.getElementById("qty").value;
+        var url=`/add_to_cart/<%-product[0].product_id%>?size=${size}&qty=${qty}`;
+        
+        location.href=url;
     }
-
-    // OTP input auto-jump functionality
-    document.addEventListener('DOMContentLoaded', function() {
-        const otpInputs = document.querySelectorAll('.otp-input');
-        otpInputs.forEach((input, idx) => {
-            input.addEventListener('input', function(e) {
-                if (this.value.length === 1 && idx < otpInputs.length - 1) {
-                    otpInputs[idx + 1].focus();
-                }
-                // Only allow digits
-                this.value = this.value.replace(/[^0-9]/g, '');
-            });
-            input.addEventListener('keydown', function(e) {
-                if (e.key === 'Backspace' && this.value === '' && idx > 0) {
-                    otpInputs[idx - 1].focus();
-                }
-            });
-        });
-    });
 </script>
 
 <%- include("footer.ejs") %>

@@ -1,5 +1,551 @@
 <%- include('navbar') %>
 
-<h1 id="content">Home</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #6c757d;
+            --success: #28a745;
+            --info: #17a2b8;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --text: #2d3748;
+            --text-light: #718096;
+            --border: #e2e8f0;
+            --background: #f7fafc;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            border-radius: 8px;
+        }
+        
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: var(--light);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            width: 300px;
+        }
+        
+        .search-box input {
+            border: none;
+            background: transparent;
+            padding: 0.5rem;
+            width: 100%;
+            outline: none;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        
+        /* Dashboard Cards */
+        .dashboard-title {
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .stat-icon.users {
+            background: rgba(66, 153, 225, 0.1);
+            color: #4299e1;
+        }
+        
+        .stat-icon.revenue {
+            background: rgba(72, 187, 120, 0.1);
+            color: #48bb78;
+        }
+        
+        .stat-icon.orders {
+            background: rgba(246, 173, 85, 0.1);
+            color: #f6ad55;
+        }
+        
+        .stat-icon.products {
+            background: rgba(245, 101, 101, 0.1);
+            color: #f56565;
+        }
+        
+        .stat-info h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-info p {
+            color: var(--text-light);
+            font-size: 0.875rem;
+        }
+        
+        /* Charts and Tables */
+        .charts-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .chart-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+        }
+        
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .chart-header h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+        
+        .chart-placeholder {
+            background: var(--light);
+            height: 250px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+        }
+        
+        /* Recent Activity */
+        .activity-list {
+            list-style: none;
+        }
+        
+        .activity-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+        }
+        
+        .activity-content {
+            flex: 1;
+        }
+        
+        .activity-content p {
+            margin-bottom: 0.25rem;
+        }
+        
+        .activity-time {
+            color: var(--text-light);
+            font-size: 0.875rem;
+        }
+        
+        /* Recent Orders Table */
+        .table-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+            margin-bottom: 2rem;
+        }
+        
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .table-header h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+        
+        .view-all {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.875rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        th {
+            font-weight: 600;
+            color: var(--text-light);
+            font-size: 0.875rem;
+        }
+        
+        tbody tr:hover {
+            background: var(--light);
+        }
+        
+        .status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .status.completed {
+            background: rgba(72, 187, 120, 0.1);
+            color: #48bb78;
+        }
+        
+        .status.pending {
+            background: rgba(246, 173, 85, 0.1);
+            color: #f6ad55;
+        }
+        
+        .status.cancelled {
+            background: rgba(245, 101, 101, 0.1);
+            color: #f56565;
+        }
+        
+        .status.dispatched {
+            background: rgba(85, 160, 246, 0.1);
+            color: #5598f6;
+        }
+        /* Responsive */
+        @media (max-width: 992px) {
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 0;
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+                width: var(--sidebar-width);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .header {
+                padding: 1rem;
+            }
+            
+            .search-box {
+                width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Dashboard Content -->
+            <h1 class="dashboard-title">Dashboard</h1>
+            
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon users">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <% for(var i=0;i<customers.length;i++){ %> <% } %>
+                        <h3><%- i %></h3>
+                        <p>Total Users</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon revenue">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="stat-info">
+                        <% var sum=0;
+                         for(var i=0;i<orders.length;i++){ sum= sum + (orders[i].total_amount) %> <% } %>
+                        <h3>₹ <%- sum %></h3>
+                        <p>Total Revenue</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon orders">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="stat-info">
+                        <% for(var i=0;i<orders.length;i++){ %> <% } %>
+                        <h3><%- i %></h3>
+                        <p>Total Orders</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon products">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div class="stat-info">
+                        <% for(var i=0;i<products.length;i++){ %> <% } %>
+                        <h3><%- i %></h3>
+                        <p>Total Products</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Charts Section -->
+            <div class="charts-container">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Revenue Overview</h3>
+                        <select style="padding: 0.5rem; border-radius: 5px; border: 1px solid var(--border);">
+                            <option>Last 7 Days</option>
+                            <option>Last 30 Days</option>
+                            <option>Last 90 Days</option>
+                        </select>
+                    </div>
+                    <div class="chart-placeholder">
+                        Revenue Chart Visualization
+                    </div>
+                </div>
+                
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Recent Activity</h3>
+                    </div>
+                    <ul class="activity-list">
+                        <li class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p>New user registered</p>
+                                <div class="activity-time">2 minutes ago</div>
+                            </div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p>New order placed #1456</p>
+                                <div class="activity-time">15 minutes ago</div>
+                            </div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-box"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p>Product stock updated</p>
+                                <div class="activity-time">1 hour ago</div>
+                            </div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p>Monthly report generated</p>
+                                <div class="activity-time">3 hours ago</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Recent Orders Table -->
+            <div class="table-card">
+                <div class="table-header">
+                    <h3>Recent Orders</h3>
+                    <a href="#" class="view-all">View All</a>
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for(var i=0;i<orders.length;i++){ %>
+                        <tr>
+                            <td><%- i+1 %></td>
+                            <td>ELITEKICKS<%- orders[i].order_id %></td>
+                            <td><%- orders[i].fullname %></td>
+                            <td><%- orders[i].order_date.toISOString().slice(0,10) %></td>
+                            <td><%- orders[i].total_amount %></td>
+                            <td><% if(orders[i].order_status == "placed"){ %>
+                                    <span class="status pending">Pending</span>
+                                 <% }else if(orders[i].order_status == "dispatched"){ %>
+                                    <span class="status dispatched">Dispatched</span>
+                                 <% }else if(orders[i].order_status == "delivered"){ %>
+                                    <span class="status completed">Delivered</span>
+                                 <% }else if(orders[i].order_status == "cancelled"){ %>
+                                    <span class="status cancelled">Cancelled</span>
+                                 <% } %>
+                                </td>
+                        </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple JavaScript for responsive sidebar toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.createElement('div');
+            menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+            menuToggle.style.position = 'fixed';
+            menuToggle.style.top = '1rem';
+            menuToggle.style.left = '1rem';
+            menuToggle.style.background = 'var(--primary)';
+            menuToggle.style.color = 'white';
+            menuToggle.style.width = '40px';
+            menuToggle.style.height = '40px';
+            menuToggle.style.borderRadius = '8px';
+            menuToggle.style.display = 'flex';
+            menuToggle.style.alignItems = 'center';
+            menuToggle.style.justifyContent = 'center';
+            menuToggle.style.cursor = 'pointer';
+            menuToggle.style.zIndex = '999';
+            menuToggle.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+            menuToggle.addEventListener('click', function() {
+                document.querySelector('.sidebar').classList.toggle('active');
+            });
+            
+            // Only show on mobile
+            if (window.innerWidth <= 768) {
+                document.body.appendChild(menuToggle);
+            }
+            
+            window.addEventListener('resize', function() {
+                if (window.innerWidth <= 768) {
+                    document.body.appendChild(menuToggle);
+                } else {
+                    if (document.body.contains(menuToggle)) {
+                        document.body.removeChild(menuToggle);
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
 
 <%- include('footer') %>

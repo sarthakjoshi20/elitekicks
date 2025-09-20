@@ -1,0 +1,407 @@
+<%- include("navbar.ejs") %>
+
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <!-- Brand Logo -->
+        <div class="brand-logo">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <h1>ELITE<span>KICKS</span></h1>
+        </div>
+        
+        <h2 class="auth-title">Welcome Back</h2>
+        
+        <!-- Email Form -->
+        <div id="email-form">
+            <form id="email-form-submit" onsubmit="sendotp1(event)">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                    <div class="error-message" id="email-error">Please enter a valid email address</div>
+                </div>
+                <button type="submit" id="send-otp-btn" class="btn-primary">
+                    <span>Send OTP</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </button>
+            </form>
+            <div class="auth-footer">
+                New to our store? <a href="/register">Create an account</a>
+            </div>
+        </div>
+
+        <!-- OTP Form -->
+        <div id="otp-form" class="otp-container">
+            <form id="otp-form-submit" onsubmit="verifyotp1(event)">
+                <div class="form-group">
+                    <label class="text-center">Enter OTP sent to <span id="user-email" class="email-display"></span></label>
+                    <input type="hidden" name="email" id="hidden-email">
+                    <div class="otp-inputs">
+                        <% for(let i=0; i<4; i++) { %>
+                            <input type="text" maxlength="1" class="otp-digit" name="otp[]" data-index="<%= i %>">
+                        <% } %>
+                    </div>
+                    <div class="error-message" id="otp-error">Invalid OTP. Please try again.</div>
+                </div>
+                <button type="submit" id="verify-otp-btn" class="btn-primary">Verify & Login</button>
+                <div class="resend-otp">
+                    Didn't receive OTP? <a id="resend-otp" class="resend-link">Resend OTP</a>
+                    <span id="countdown" class="countdown"></span>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Base Styles */
+    :root {
+        --primary1: #4a90e2;
+        --primary1-hover: #3a7bc8;
+        --error: #e74c3c;
+        --success: #2ecc71;
+        --text: #333;
+        --text-light: #555;
+        --border: #ddd;
+        --bg: #f5f5f5;
+        --white: #fff;
+        --shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Layout */
+    .auth-wrapper {
+        background-color: var(--bg);
+        min-height: calc(100vh - 120px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+    
+    .auth-card {
+        background-color: var(--white);
+        border-radius: 10px;
+        box-shadow: var(--shadow);
+        width: 100%;
+        max-width: 400px;
+        padding: 30px;
+    }
+    
+    /* Branding */
+    .brand-logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 25px;
+    }
+    
+    .brand-logo svg {
+        width: 28px;
+        height: 28px;
+        color: var(--primary1);
+    }
+    
+    .brand-logo h1 {
+        font-size: 28px;
+        font-weight: 800;
+        margin: 0;
+    }
+    
+    .brand-logo span {
+        color: #e74c3c;
+    }
+    
+    /* Typography */
+    .auth-title {
+        font-size: 24px;
+        color: var(--text);
+        margin-bottom: 20px;
+        text-align: center;
+        font-weight: 600;
+    }
+    
+    /* Forms */
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    label {
+        display: block;
+        font-weight: 500;
+        color: var(--text-light);
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+    
+    input {
+        width: 100%;
+        padding: 12px 15px;
+        font-size: 16px;
+        border: 1px solid var(--border);
+        border-radius: 5px;
+        transition: all 0.3s;
+    }
+    
+    input:focus {
+        border-color: var(--primary1);
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+    }
+    
+    /* Buttons */
+    .btn-primary {
+        width: 100%;
+        padding: 12px;
+        background-color: var(--primary1);
+        color: var(--white);
+        font-size: 16px;
+        font-weight: 500;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    
+    .btn-primary:hover {
+        background-color: var(--primary1-hover);
+        transform: translateY(-1px);
+    }
+    
+    .btn-primary svg {
+        width: 18px;
+        height: 18px;
+    }
+    
+    /* OTP Styles */
+    .otp-container {
+        display: none;
+    }
+    
+    .otp-inputs {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .otp-inputs input {
+        width: 50px;
+        height: 50px;
+        text-align: center;
+        font-size: 18px;
+        font-weight: 600;
+    }
+    
+    /* Footer Links */
+    .auth-footer {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 14px;
+        color: var(--text-light);
+    }
+    
+    .auth-footer a {
+        color: var(--primary1);
+        text-decoration: none;
+        font-weight: 500;
+    }
+    
+    .auth-footer a:hover {
+        text-decoration: underline;
+    }
+    
+    /* Resend OTP */
+    .resend-otp {
+        text-align: center;
+        margin-top: 15px;
+        font-size: 14px;
+        color: var(--text-light);
+    }
+    
+    .resend-link {
+        color: var(--primary1);
+        cursor: pointer;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    
+    .resend-link:hover {
+        text-decoration: underline;
+    }
+    
+    .countdown {
+        display: block;
+        margin-top: 5px;
+        color: var(--text-light);
+        font-size: 13px;
+    }
+    
+    /* Error Messages */
+    .error-message {
+        display: none;
+        color: var(--error);
+        font-size: 14px;
+        margin-top: 5px;
+    }
+    
+    /* Success Message */
+    .success-message {
+        color: var(--success);
+        text-align: center;
+        margin-top: 10px;
+        font-size: 14px;
+    }
+</style>
+
+<script>
+    // Your original functions preserved exactly
+    let resendTimer;
+    let countdown = 30;
+
+    function startCountdown() {
+        const countdownEl = document.getElementById("countdown");
+        const resendOtpBtn = document.getElementById("resend-otp");
+        countdownEl.textContent = `You can resend OTP in ${countdown} seconds`;
+        resendOtpBtn.style.pointerEvents = 'none';
+        resendOtpBtn.style.opacity = '0.6';
+
+        resendTimer = setInterval(() => {
+            countdown--;
+            countdownEl.textContent = `You can resend OTP in ${countdown} seconds`;
+            if (countdown <= 0) {
+                clearInterval(resendTimer);
+                resendOtpBtn.style.pointerEvents = 'auto';
+                resendOtpBtn.style.opacity = '1';
+                countdownEl.textContent = '';
+                countdown = 30;
+            }
+        }, 1000);
+    }
+
+    function sendotp1(event){
+        event.preventDefault();
+        const email = document.getElementById("email").value;
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            document.getElementById("email-error").style.display = "block";
+            return;
+        }
+
+        $.ajax({
+            url: "/send_otp_mail",
+            type: "post",
+            data: { email },
+            success: function(res){
+                console.log(res);
+                document.getElementById("email-form").style.display = "none";
+                document.getElementById("otp-form").style.display = "block";
+                document.getElementById("user-email").textContent = email;
+                document.getElementById("hidden-email").value = email;
+                document.querySelectorAll('.otp-digit')[0].focus();
+                startCountdown();
+            }
+        });
+    }
+
+    function verifyotp1(event){
+        event.preventDefault();
+        let otp = '';
+        document.querySelectorAll(".otp-digit").forEach(input => {
+            otp += input.value;
+        });
+
+        $.ajax({
+            url: "/verify_otp",
+            type: "post",
+            data: { otp },
+            success: function(res){
+                if(res.status === 'false'){
+                    document.querySelectorAll('.otp-digit').forEach(input => {
+                        input.style.border = "1px solid red";
+                    });
+                    document.getElementById("otp-error").style.display = "block";
+                    document.getElementById("otp-error").textContent = "Invalid OTP. Please try again.";
+                } else {
+                    document.getElementById("otp-error").style.display = "none";
+                    document.getElementById("otp-form-submit").submit();
+                    window.location.href = "/";
+                }
+            }
+        });
+    }
+
+    // Enhanced OTP input behavior
+    document.addEventListener('DOMContentLoaded', function() {
+        const otpInputs = document.querySelectorAll('.otp-digit');
+        otpInputs.forEach((input, idx) => {
+            input.addEventListener('input', function(e) {
+                this.value = this.value.replace(/[^0-9]/g, '');
+                if (this.value.length === 1 && idx < otpInputs.length - 1) {
+                    otpInputs[idx + 1].focus();
+                }
+            });
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace' && this.value === '' && idx > 0) {
+                    otpInputs[idx - 1].focus();
+                }
+            });
+            input.addEventListener('paste', function(e) {
+                e.preventDefault();
+                const pasteData = e.clipboardData.getData('text');
+                if (/^\d{4}$/.test(pasteData)) {
+                    for (let i = 0; i < 4; i++) {
+                        otpInputs[i].value = pasteData[i];
+                    }
+                    otpInputs[3].focus();
+                }
+            });
+        });
+
+        // Resend OTP handler
+        document.getElementById("resend-otp").addEventListener("click", function () {
+        if (countdown !== 30) return; // Add this line for clarity
+
+        const email = document.getElementById("hidden-email").value;
+        if (!email) return;
+
+        countdown = 30; // Reset countdown early
+        $.ajax({
+            url: "/send_otp_mail",
+            type: "post",
+            data: { email },
+            success: function (res) {
+                console.log("OTP Resent", res);
+
+                document.querySelectorAll(".otp-digit").forEach(input => input.value = '');
+                document.querySelectorAll(".otp-digit")[0].focus();
+                document.getElementById("otp-error").style.display = "none";
+
+                clearInterval(resendTimer);
+                startCountdown(); // Restart timer
+
+                // Show message
+                const msg = document.createElement("div");
+                msg.className = "success-message";
+                msg.textContent = "New OTP sent to your email.";
+                const existing = document.querySelector(".success-message");
+                if (existing) existing.remove();
+                document.querySelector(".resend-otp").appendChild(msg);
+                setTimeout(() => msg.remove(), 3000);
+            },
+            error: function (err) {
+                console.error("Resend OTP failed", err);
+            }
+        });
+    });
+
+    });
+</script>
+
+<%- include("footer.ejs") %>

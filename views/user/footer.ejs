@@ -3,9 +3,9 @@
         <div class="container">
           <div class="row g-4">
             <div class="col-lg-4 mb-4 mb-lg-0">
-              <h5 class="mb-4">
-                <span class="fw-bold">ELITE</span><span class="text-danger">KICKS</span>
-              </h5>
+              <h5 class="mb-4"><a style="text-decoration: none;" href="/">
+                <span class="fw-bold text-white">ELITE</span><span class="fw-bold text-danger">KICKS</span>
+              </a></h5>
               <p>Premium footwear combining craftsmanship, quality materials, and timeless design.</p>
               <div class="mt-4">
                 <a href="#" class="social-icon text-white me-2"><i class="bi bi-facebook"></i></a>
@@ -19,10 +19,10 @@
               <h6 class="mb-4">SHOP</h6>
               <ul class="list-unstyled">
                 <li class="mb-2"><a href="#" class="footer-link">New Arrivals</a></li>
-                <li class="mb-2"><a href="#" class="footer-link">Best Sellers</a></li>
-                <li class="mb-2"><a href="#" class="footer-link">Men's</a></li>
-                <li class="mb-2"><a href="#" class="footer-link">Women's</a></li>
-                <li class="mb-2"><a href="#" class="footer-link">Kids'</a></li>
+                <li class="mb-2"><a href="/product_list?cat=Mens" class="footer-link">Men's</a></li>
+                <li class="mb-2"><a href="/product_list?cat=Womens" class="footer-link">Women's</a></li>
+                <li class="mb-2"><a href="/product_list?cat=KidBoys" class="footer-link">Kids Boys</a></li>
+                <li class="mb-2"><a href="/product_list?cat=KidGirls" class="footer-link">Kids Girls</a></li>
               </ul>
             </div>
             
@@ -63,7 +63,7 @@
           
           <div class="row">
             <div class="col-md-6 text-center text-md-start">
-              <p class="small mb-0">© 2024 EliteKicks. All rights reserved.</p>
+              <p class="small mb-0">© 2025 EliteKicks. All rights reserved.</p>
             </div>
             <div class="col-md-6 text-center text-md-end">
               <p class="small mb-0">Designed with <i class="bi bi-heart-fill text-danger"></i> in New York</p>
@@ -77,6 +77,56 @@
         <i class="bi bi-arrow-up"></i>
       </a>
       
+      <!-- Modals (unchanged from original) -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog model-sm">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Login Your Account</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/send_otp_mail" method="post" onsubmit="sendotp(event)">
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="abcdef123@gmail.com">
+                    </div>
+                    <div class="d-flex justify-content-end" style="border-top:1px solid #dee2e6;">
+                        <button class="btn btn-primary mt-3">Next</button>
+                    </div>
+                </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="getuserotpModel">
+        <div class="modal-dialog model-sm">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Verify Your OTP</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/verify_otp" method="post" onsubmit="verifyotp(event)" >
+                    <div class="mb-3 text-center">
+                        <label for="otp1" class="form-label mb-3" style="font-weight:600;">Enter Your OTP</label>
+                        <div class="otp-input-group">
+                            <input type="text" class="form-control otp-input" id="otp1" name="otp1" maxlength="1" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" required />
+                            <input type="text" class="form-control otp-input" id="otp2" name="otp2" maxlength="1" inputmode="numeric" pattern="[0-9]*" required />
+                            <input type="text" class="form-control otp-input" id="otp3" name="otp3" maxlength="1" inputmode="numeric" pattern="[0-9]*" required />
+                            <input type="text" class="form-control otp-input" id="otp4" name="otp4" maxlength="1" inputmode="numeric" pattern="[0-9]*" required />
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end" style="border-top:1px solid #dee2e6;">
+                        <button class="btn btn-primary mt-3"  data-bs-dismiss="modal" aria-label="Close">Verify OTP</button>
+                    </div>
+                </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
       <script>
         // Preloader
@@ -148,6 +198,92 @@
             el.classList.toggle('animate__pulse');
           });
         }, 2000);
+      </script>
+
+      <script>
+        // OTP and login functions (unchanged from original)
+        function sendotp(event){
+            event.preventDefault();
+            var email=document.getElementById("email").value;
+
+            $.ajax({
+                url:"/send_otp_mail",
+                type:"post",
+                data:{"email":email},
+            }).done(function(res){
+                // Get the modal element
+                var exampleModalEl = document.getElementById('exampleModal');
+
+                // Try to get an existing Bootstrap Modal instance
+                var exampleModal = bootstrap.Modal.getInstance(exampleModalEl);
+
+                // If not already initialized, create a new instance
+                if (!exampleModal) {
+                  exampleModal = new bootstrap.Modal(exampleModalEl);
+                }
+
+                // Hide the first modal
+                exampleModal.hide();
+
+                // Show the second modal
+                var otpModalEl = document.getElementById("getuserotpModel");
+                var otpModal = new bootstrap.Modal(otpModalEl);
+                otpModal.show();
+            })
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const otpInputs = document.querySelectorAll('.otp-input');
+            otpInputs.forEach((input, idx) => {
+                input.addEventListener('input', function(e) {
+                    if (this.value.length === 1 && idx < otpInputs.length - 1) {
+                        otpInputs[idx + 1].focus();
+                    }
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                });
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && this.value === '' && idx > 0) {
+                        otpInputs[idx - 1].focus();
+                    }
+                });
+            });
+        });
+
+        function verifyotp(event){
+            event.preventDefault();
+            var otp=document.getElementById("otp1").value + document.getElementById("otp2").value + document.getElementById("otp3").value + document.getElementById("otp4").value;
+            $.ajax({
+                url:"/verify_otp",
+                type:"post",
+                data:{"otp":otp},
+            }).done(function(res){
+                if(res.status== 'false'){
+                    document.querySelectorAll('.otp-input').forEach(input => {
+                        input.style.border="1px solid red";
+                    });
+                }else{
+                    redirect_to_buy_now()
+                }
+            })
+        }
+      </script>
+
+      <script>
+        function getCityStateCountry(){
+            var pincode=document.getElementById("pincode").value;
+            $.ajax({
+                url:`https://api.postalpincode.in/pincode/${pincode}`,
+            }).done(function(result){
+                if(result[0].Status=="Success"){
+                    var city=result[0].PostOffice[0].Block;
+                    var state=result[0].PostOffice[0].State;
+                    var country=result[0].PostOffice[0].Country;
+                    document.getElementById("city").value=city;
+                    document.getElementById("state").value=state;
+                    document.getElementById("country").value=country;
+                }
+            });
+        }
       </script>
   </body>
   </html>
